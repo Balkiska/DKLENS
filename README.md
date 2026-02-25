@@ -25,16 +25,26 @@ With every new commit, verification hooks will be executed. To bypass them, run 
 git commit -m "what my commit does blablabla" --no-verify
 ```
 ### Pre-commit tools
-**black**: code auto-formatting
--> https://github.com/psf/black
+**pre-commit-hooks**: repository hygiene checks  
+- trailing whitespace, end-of-file, YAML validation, large files, etc.  
+-> https://github.com/pre-commit/pre-commit-hooks
 
-**isort**: automatic sorting of imports
--> https://pycqa.github.io/isort/index.html
-
-**ruff**: error detection
+**ruff**: linting + auto-fix + import sorting  
+- replaces flake8 (+ plugins) and isort (via rule "I")  
 -> https://docs.astral.sh/ruff/
 
-**mypy**: type checking
+**ruff-format**: code auto-formatting  
+- replaces black  
+-> https://docs.astral.sh/ruff/formatter/
+
+**detect-secrets**: prevent committing secrets  
+- detects API keys, tokens, passwords using a baseline file  
+-> https://github.com/Yelp/detect-secrets
+
+**mypy**: static type checking  
+- complementary to Ruff (not replaced)  
+-> https://mypy.readthedocs.io/
+
 
 ## License
 

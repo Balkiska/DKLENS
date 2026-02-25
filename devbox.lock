@@ -513,6 +513,10 @@
         }
       }
     },
+    "python310Packages.mypy": {
+      "resolved": "github:NixOS/nixpkgs/3fbab70c6e69c87ea2b6e48aa6629da2aa6a23b0#python310Packages.mypy",
+      "source": "nixpkg"
+    },
     "python3@3.12": {
       "last_modified": "2025-01-06T03:40:18Z",
       "plugin_version": "0.0.4",
