@@ -20,7 +20,8 @@
   "shell": {
     "init_hook": [
       "echo '🐳 DockLens devbox ready'",
-      "python --version"
+      "python --version",
+      "pre-commit install"
     ]
   }
 }

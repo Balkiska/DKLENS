@@ -20,31 +20,22 @@ devbox shell
 ```
 
 # Pre-commit Hooks
-With every new commit, verification hooks will be executed. To bypass them, run the following command: 
+With every new commit, verification hooks will be executed. To bypass them, run the following command:
 ```
 git commit -m "what my commit does blablabla" --no-verify
 ```
 ### Pre-commit tools
-**pre-commit-hooks**: repository hygiene checks  
-- trailing whitespace, end-of-file, YAML validation, large files, etc.  
+**pre-commit-hooks**: repository hygiene checks
+- trailing whitespace, end-of-file, YAML validation, large files, etc.
 -> https://github.com/pre-commit/pre-commit-hooks
 
-**ruff**: linting + auto-fix + import sorting  
-- replaces flake8 (+ plugins) and isort (via rule "I")  
+**ruff**: linting + auto-fix + import sorting + code formatting
+- replaces flake8, isort, and black
 -> https://docs.astral.sh/ruff/
 
-**ruff-format**: code auto-formatting  
-- replaces black  
--> https://docs.astral.sh/ruff/formatter/
-
-**detect-secrets**: prevent committing secrets  
-- detects API keys, tokens, passwords using a baseline file  
--> https://github.com/Yelp/detect-secrets
-
-**mypy**: static type checking  
-- complementary to Ruff (not replaced)  
--> https://mypy.readthedocs.io/
-
+**gitleaks**: secret detection
+- detects API keys, tokens, passwords (160+ secret types)
+-> https://github.com/gitleaks/gitleaks
 
 ## License
 
