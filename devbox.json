@@ -8,7 +8,8 @@
     "ripgrep@latest",
     "sqlite@latest",
     "kubectl@latest",
-    "kubernetes-helm@latest"
+    "kubernetes-helm@latest",
+    "poetry@latest"
   ],
   "env": {
     "PYTHONDONTWRITEBYTECODE": "1",
@@ -18,7 +19,8 @@
   "shell": {
     "init_hook": [
       "echo '🐳 DockLens devbox ready'",
-      "python --version"
+      "python --version",
+      "poetry install"
     ]
   }
 }
