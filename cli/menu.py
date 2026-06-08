@@ -1,13 +1,13 @@
 import typer
 from cli.output import show_table, show_json
+from scanner.docker_image import validate_and_pull_image
+from scanner.extractor import extract_filesystem
+from scanner.packages import extract_packages
 
 app = typer.Typer(help="DockLens - Docker Image Security Scanner")
 
 @app.callback()
 def main():
-    """
-    DockLens CLI root command.
-    """
     pass
 
 @app.command()
@@ -18,16 +18,24 @@ def scan(
     """
     Scan a Docker image for known vulnerabilities.
     """
-    typer.echo("Starting DockLens scan...")
-    typer.echo(f"Image: {image}")
+    typer.echo(f"Starting scan for: {image}")
 
-    # TODO: plug real scanner here
-    # findings = extract_packages(image)
-    findings = []
+    validate_and_pull_image(image)
+    fs_path = extract_filesystem(image)
+    packages = extract_packages(str(fs_path))
 
-    if not findings:
-        typer.echo("Scanner not implemented yet. Run tests/test_output.py to test display.")
-        return
+    typer.echo(f"Found {len(packages)} packages.")
+
+    # Format packages for display
+    findings = [
+        {
+            "package": p["name"],
+            "version": p["version"],
+            "severity": "UNKNOWN",
+            "fix": None,
+        }
+        for p in packages
+    ]
 
     if format == "json":
         show_json(image, findings)
