@@ -449,6 +449,8 @@
         }
       }
     },
+<<<<<<< HEAD
+=======
     "poetry@latest": {
       "last_modified": "2026-02-13T23:34:13Z",
       "plugin_version": "0.0.4",
@@ -514,6 +516,7 @@
         }
       }
     },
+>>>>>>> origin/main
     "python3@3.12": {
       "last_modified": "2025-01-06T03:40:18Z",
       "plugin_version": "0.0.4",
