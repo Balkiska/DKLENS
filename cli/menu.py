@@ -1,8 +1,12 @@
+# cli/menu.py
+# Main CLI entry point for DockLens.
+
 import typer
 from cli.output import show_table, show_json
 from scanner.docker_image import validate_and_pull_image
 from scanner.extractor import extract_filesystem
 from scanner.packages import extract_packages
+from vulns.scanner import scan_packages
 
 app = typer.Typer(help="DockLens - Docker Image Security Scanner")
 
@@ -24,18 +28,9 @@ def scan(
     fs_path = extract_filesystem(image)
     packages = extract_packages(str(fs_path))
 
-    typer.echo(f"Found {len(packages)} packages.")
+    typer.echo(f"Found {len(packages)} packages. Checking vulnerabilities...")
 
-    # Format packages for display
-    findings = [
-        {
-            "package": p["name"],
-            "version": p["version"],
-            "severity": "UNKNOWN",
-            "fix": None,
-        }
-        for p in packages
-    ]
+    findings = scan_packages(packages)
 
     if format == "json":
         show_json(image, findings)
