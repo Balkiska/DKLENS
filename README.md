@@ -36,6 +36,16 @@ git commit -m "what my commit does blablabla" --no-verify
 **gitleaks**: secret detection
 - detects API keys, tokens, passwords (160+ secret types)
 -> https://github.com/gitleaks/gitleaks
+# Auto-activation (direnv)
+The devbox environment activates automatically when entering the repository directory.
+This requires a **one-time setup per machine**:
+```
+sudo apt install direnv
+echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+source ~/.bashrc
+direnv allow
+```
+After that, opening the repository directory will activate the environment automatically.
 
 ## License
 

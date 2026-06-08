@@ -11,6 +11,7 @@
     "kubernetes-helm@latest",
     "pre-commit@4.5.1",
     "python310Packages.mypy"
+    "poetry@latest"
   ],
   "env": {
     "PYTHONDONTWRITEBYTECODE": "1",
@@ -22,6 +23,7 @@
       "echo '🐳 DockLens devbox ready'",
       "python --version",
       "pre-commit install"
+      "poetry install"
     ]
   }
 }
