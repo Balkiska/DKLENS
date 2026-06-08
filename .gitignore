@@ -11,3 +11,6 @@ __pycache__/
 
 
 .claude/
+
+# SQLite database files
+*.db
