@@ -1,6 +1,6 @@
 # Story 2.3: Detect Linux Distribution Inside Image
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -17,14 +17,14 @@ so that the correct package extractor is selected for the next step.
 
 ## Tasks / Subtasks
 
-- [ ] Create `docklens/extractors/distro.py` — `detect_distro(rootfs: Path) -> dict` (AC: 1–4)
-  - [ ] Try `/etc/os-release` first: parse `ID=` and `VERSION_ID=` fields
-  - [ ] Fallback `/etc/debian_version` → distro `"debian"`
-  - [ ] Fallback `/etc/alpine-release` → distro `"alpine"`, version = file content stripped
-  - [ ] Fallback `/etc/redhat-release` → distro `"rhel"`, parse version with regex
-  - [ ] All files missing → return `{"distro": "unknown", "version": None}`
-- [ ] Write unit tests `tests/unit/test_distro.py` with minimal fake rootfs directories for each distro (AC: 1–4)
-  - [ ] Use `tmp_path` pytest fixture to create fake `/etc/os-release` files
+- [x] Implement `detect_distro(fs_path)` in `scanner/packages.py` (AC: 2, 4) — branch `feat/scanner`
+  - [x] Detects Alpine via `/lib/apk/db/installed` (AC: 2 — partial: no version extracted)
+  - [x] Detects Debian via `/var/lib/dpkg/status` (AC: 1 — partial: no version extracted)
+  - [x] Returns `"unknown"` when no known DB found (AC: 4 — partial: returns string not dict)
+  - [ ] Version not extracted — returns plain string (`"alpine"`, `"debian"`, `"unknown"`) not `{"distro": ..., "version": ...}`
+  - [ ] Does not read `/etc/os-release` — detection based on package DB presence only
+  - [ ] RHEL/CentOS not detected (AC: 3 not met)
+- [ ] Write unit tests with pytest `tmp_path` fixture — only manual script `tests/test_packages.py`
 
 ## Dev Notes
 
@@ -54,4 +54,10 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Detection implemented on `feat/scanner` in `scanner/packages.py` as part of `detect_distro()`.
+- Alpine and Debian are detected correctly. RHEL not yet handled.
+- **Gaps before done**: (1) extract and return version (read `/etc/alpine-release` for Alpine, parse `/etc/os-release` for Debian); (2) add RHEL detection via `/etc/redhat-release`; (3) return a dict `{"distro": ..., "version": ...}` instead of a plain string.
+
 ### File List
+
+- `scanner/packages.py` (detect_distro)

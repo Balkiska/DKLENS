@@ -1,6 +1,6 @@
 # Story 2.2: Extract Docker Image Filesystem
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -17,15 +17,16 @@ so that package extractors can read it without any container ever being started.
 
 ## Tasks / Subtasks
 
-- [ ] Add `export_filesystem(image: docker.models.images.Image) -> ContextManager[Path]` to `DockerAdapter` (AC: 1, 2, 4)
-  - [ ] Use `image.save()` to stream the image tarball
-  - [ ] Write stream to `tempfile.TemporaryDirectory`
-  - [ ] Extract tarball layers with `tarfile` stdlib; merge layers in order (later layers override earlier)
-  - [ ] Return a context manager (`contextlib.contextmanager`) that yields the rootfs `Path` and cleans up on exit
-- [ ] Handle `docker.errors.DockerException` (daemon not running) → raise `DocklensError` (AC: 3)
-- [ ] Register SIGINT handler in `cli/main.py` to ensure temp dir cleanup on Ctrl+C (AC: 2)
-- [ ] Write integration test `tests/integration/test_docker_adapter.py` against a minimal scratch image fixture (AC: 1, 2)
-  - [ ] Fixture: a tiny pre-built tar in `tests/fixtures/images/minimal.tar`
+- [x] Implement `extract_filesystem(image_name)` using `image.save()` to stream tarball (AC: 1, 4) — branch `feat/scanner`
+  - [x] Uses Docker SDK `image.save()` — no subprocess, no container created (AC: 4)
+  - [x] Reads `manifest.json` to extract layers in correct order (AC: 1)
+  - [x] Merges layers into a single filesystem directory (AC: 1)
+  - [x] Skips `.wh.` whiteout files — ⚠️ partial: skips the whiteout marker but does not delete the whiteout target file from the merged rootfs
+  - [ ] ⚠️ Uses `tempfile.mkdtemp()` not `TemporaryDirectory` — temp dir is never deleted after scan (AC: 2 not met)
+  - [ ] No SIGINT cleanup handler (AC: 2 not met)
+- [ ] Handle `docker.errors.DockerException` → `DocklensError` (AC: 3) — currently handled in `docker_image.py`, not here
+- [ ] Register SIGINT handler for temp dir cleanup (AC: 2) — not started
+- [ ] Write integration tests with pytest (AC: 1, 2) — only manual script `tests/test_extractor.py`
 - [ ] Verify no containers appear in `docker ps -a` after a scan
 
 ## Dev Notes
@@ -56,4 +57,12 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Core extraction logic implemented on `feat/scanner` in `scanner/extractor.py`.
+- Layer ordering from `manifest.json` and SDK-only approach (no subprocess) are correct.
+- **Two gaps before done**: (1) temp dir cleanup — replace `mkdtemp()` with `TemporaryDirectory` context manager so the dir is deleted on exit; (2) proper whiteout handling — currently skips `.wh.X` files but must also delete the target file `X` from the merged rootfs.
+- Tests are manual `if __name__ == "__main__"` scripts, not pytest.
+
 ### File List
+
+- `scanner/extractor.py` (extract_filesystem)
+- `tests/test_extractor.py` (manual smoke test script)

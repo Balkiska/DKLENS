@@ -21,7 +21,8 @@ so that I have a solid, installable entry point to build all scanning features o
 ## Tasks / Subtasks
 
 - [x] Create CLI package with `__init__.py`, `main.py` entrypoint and Typer app (AC: 1, 5) — branch `feat/cli-structure`
-- [x] Implement Typer app with `scan` command stub — body prints "Scanner not implemented yet." (AC: 5)
+- [x] Implement Typer app with `scan` command — now wired to real scanner pipeline (AC: 1, 5) — branch `feat/scanner`
+  - [x] Calls `validate_and_pull_image()`, `extract_filesystem()`, `extract_packages()` in sequence
   - [ ] Define all scan flags: `--k8s`, `--pull`, `--exit-on-critical`, `--output`, `--output-file`, `--sbom`, `--no-cache`, `--namespace`, `--verbose` — only `image` and `--format` currently defined
 - [ ] Implement `docklens/cli/tui.py` — InquirerPy main menu (AC: 3, 4) — not started
   - [ ] Four options: scan local / scan k8s / cached results / quit

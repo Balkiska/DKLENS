@@ -1,6 +1,6 @@
 # Story 2.4: Extract Installed System and Language Packages
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -19,26 +19,20 @@ so that I have a complete SBOM to feed into the CVE lookup pipeline.
 
 ## Tasks / Subtasks
 
-- [ ] Implement `docklens/extractors/base.py` — `PackageExtractor` Protocol (AC: all)
-  - [ ] `can_handle(rootfs: Path) -> bool`
-  - [ ] `extract(rootfs: Path) -> list[Package]`
-- [ ] Implement `docklens/extractors/dpkg.py` — Debian dpkg parser (AC: 1)
-  - [ ] Parse `/var/lib/dpkg/status` stanza format (blank-line separated records)
-  - [ ] Extract `Package:` and `Version:` fields
-- [ ] Implement `docklens/extractors/apk.py` — Alpine apk parser (AC: 2)
-  - [ ] Parse `/lib/apk/db/installed` format (key:value lines, blank-line separated)
-  - [ ] `P:` = name, `V:` = version
-- [ ] Implement `docklens/extractors/rpm.py` — RPM DB reader (AC: 3)
-  - [ ] Use `rpm` Python bindings if available; fallback to parsing `/var/lib/rpm/` with `rpmfile` or subprocess `rpm --dbpath`
-  - [ ] [ASSUMPTION: rpm bindings or `rpmfile` library available as optional dep]
-- [ ] Implement `docklens/extractors/pip.py` — pip METADATA reader (AC: 4)
-  - [ ] `glob(rootfs / "**" / "*.dist-info" / "METADATA")` — read `Name:` and `Version:` headers
-- [ ] Implement `docklens/extractors/npm.py` — npm package.json reader (AC: 5)
-  - [ ] `glob(rootfs / "**/node_modules/*/package.json")` — parse `name` and `version` fields
-- [ ] Implement `docklens/core/sbom.py` — `SBOMExtractor` that runs all registered extractors (AC: 6)
-  - [ ] Registered list: `[DpkgExtractor(), ApkExtractor(), RpmExtractor(), PipExtractor(), NpmExtractor()]`
-  - [ ] Calls `can_handle()` on each; collects results; returns combined `list[Package]`
-- [ ] Write unit tests `tests/unit/test_extractors.py` using `tmp_path` fake rootfs fixtures (AC: 1–6)
+- [x] Implement `parse_dpkg_packages(fs_path)` — Debian/Ubuntu dpkg parser (AC: 1) — branch `feat/scanner`
+  - [x] Parses `/var/lib/dpkg/status`, extracts `Package:` and `Version:` fields
+  - [x] Returns list of dicts `{name, version, ecosystem: "Debian"}`
+  - [ ] ⚠️ Returns plain dicts, not `Package` model objects — needs conversion when `core/models.py` is created
+- [x] Implement `parse_apk_packages(fs_path)` — Alpine apk parser (AC: 2) — branch `feat/scanner`
+  - [x] Parses `/lib/apk/db/installed`, extracts `P:` (name) and `V:` (version) fields
+  - [x] Returns list of dicts `{name, version, ecosystem: "Alpine"}`
+- [x] Implement `extract_packages(fs_path)` — auto-selects parser based on `detect_distro()` (AC: 6 partial)
+  - [x] Returns empty list for unknown distro without exception (AC: 6)
+- [ ] Implement RPM parser (AC: 3) — not started
+- [ ] Implement pip extractor (AC: 4) — not started
+- [ ] Implement npm extractor (AC: 5) — not started
+- [ ] Implement `PackageExtractor` Protocol and `SBOMExtractor` orchestrator — not started
+- [ ] Write pytest unit tests with `tmp_path` fake rootfs — only manual script `tests/test_packages.py`
 
 ## Dev Notes
 
@@ -70,4 +64,11 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- dpkg (Debian) and apk (Alpine) parsers implemented on `feat/scanner` in `scanner/packages.py`.
+- Both parsers return plain dicts — will need to be wrapped in `Package` model objects once `core/models.py` is created in Story 1.1.
+- **Remaining before done**: RPM, pip, npm extractors; `PackageExtractor` protocol; `SBOMExtractor` orchestrator; proper pytest tests.
+
 ### File List
+
+- `scanner/packages.py` (detect_distro, parse_apk_packages, parse_dpkg_packages, extract_packages)
+- `tests/test_packages.py` (manual smoke test script)

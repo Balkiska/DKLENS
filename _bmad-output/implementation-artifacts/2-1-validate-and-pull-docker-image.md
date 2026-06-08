@@ -17,15 +17,16 @@ so that I get a clear error when I mistype an image name and a smooth pull exper
 
 ## Tasks / Subtasks
 
-- [x] Implement image validation logic — `image_exists_locally()`, `check_docker_installed()`, `check_docker_running()`, `pull_image()` (AC: 1–4) — branch `feature/issue-4-scan-command`
-  - [x] Check image exists locally (AC: 1, 2)
-  - [x] Pull image when not found (AC: 3, 4)
-  - [ ] ⚠️ Uses `subprocess` calls (`docker image inspect`, `docker pull`) — needs to be rewritten using `docker.from_env()` SDK as planned in architecture
-  - [ ] Not structured as a `DockerAdapter` class — currently standalone functions in `cli/scan_command.py`
+- [x] Implement `validate_and_pull_image(image_name)` using Docker SDK `docker.from_env()` (AC: 1–4) — branch `feat/scanner`
+  - [x] `client.images.get()` — checks image exists locally (AC: 1, 2)
+  - [x] `client.images.pull()` on `ImageNotFound` (AC: 3, 4)
+  - [x] `client.ping()` to verify daemon is reachable (AC: 3 prerequisite)
+  - [ ] ⚠️ Uses `sys.exit(1)` instead of `DocklensError` — error handling not aligned with architecture
+  - [ ] Not structured as a `DockerAdapter` class — standalone functions in `scanner/docker_image.py`
+- [x] Wired into `cli/menu.py` `scan` command — branch `feat/scanner`
 - [ ] Add `DocklensError` custom exception to `docklens/core/models.py` — not started
-- [ ] Wire validation into `cli/main.py` `scan` command — not connected yet
-- [ ] Write unit tests `tests/unit/test_docker_adapter_validate.py` using `unittest.mock.patch` — not started
-- [ ] Manual smoke test: `docklens scan ubuntu:22.04` (local) and `docklens scan nonexistent:tag`
+- [ ] Write unit tests with `unittest.mock.patch` on docker client — tests are manual scripts only (`tests/test_docker_image.py`), not pytest
+- [x] Manual smoke test: `validate_and_pull_image("alpine:3.18")` verified in `tests/test_docker_image.py`
 
 ## Dev Notes
 
@@ -55,11 +56,11 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
-- Validation and pull logic implemented on branch `feature/issue-4-scan-command` in `cli/scan_command.py`.
-- All 4 ACs are functionally satisfied: local check, error on missing image, pull on request, error on pull failure.
-- **Deviation**: implementation uses `subprocess` (`docker image inspect`, `docker pull`) instead of the Docker SDK (`docker.from_env()`). Before merging, this needs to be rewritten as a `DockerAdapter` class using the SDK — subprocess calls bypass the `DOCKER_HOST` env var and are harder to unit test.
-- **Not connected**: `scan_entry()` exists but is not wired into the Typer `scan` command from story 1.1 yet.
+- Initial subprocess-based implementation on `feature/issue-4-scan-command` superseded by Docker SDK implementation on `feat/scanner`.
+- All 4 ACs functionally covered by `scanner/docker_image.py` using `docker.from_env()`, `client.images.get()`, `client.images.pull()`.
+- **Remaining before done**: replace `sys.exit(1)` with `DocklensError`; restructure as `DockerAdapter` class; write proper pytest unit tests with mocked docker client.
 
 ### File List
 
-- `cli/scan_command.py` (validate_image_ref, check_docker_installed, check_docker_running, image_exists_locally, pull_image, scan_entry)
+- `scanner/docker_image.py` (get_docker_client, validate_and_pull_image)
+- `tests/test_docker_image.py` (manual smoke test script)

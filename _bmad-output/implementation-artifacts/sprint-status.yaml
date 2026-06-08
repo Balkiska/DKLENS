@@ -57,9 +57,9 @@ development_status:
   # ─────────────────────────────────────────
   epic-2: in-progress
   2-1-validate-and-pull-docker-image: in-progress
-  2-2-extract-docker-image-filesystem: ready-for-dev
-  2-3-detect-linux-distribution-inside-image: ready-for-dev
-  2-4-extract-installed-system-and-language-packages: ready-for-dev
+  2-2-extract-docker-image-filesystem: in-progress
+  2-3-detect-linux-distribution-inside-image: in-progress
+  2-4-extract-installed-system-and-language-packages: in-progress
   epic-2-retrospective: optional
 
   # ─────────────────────────────────────────
