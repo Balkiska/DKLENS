@@ -1,0 +1,119 @@
+# generated: 2026-06-08
+# last_updated: 2026-06-08
+# project: Docklens
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: "2026-06-08"
+last_updated: "2026-06-08"
+project: Docklens
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+
+  # ─────────────────────────────────────────
+  # Epic 1: Working CLI Foundation
+  # GitHub issue: #4
+  # ─────────────────────────────────────────
+  epic-1: in-progress
+  1-1-cli-entry-point-tui-menu-and-scan-command-skeleton: in-progress
+  epic-1-retrospective: optional
+
+  # ─────────────────────────────────────────
+  # Epic 2: Docker Image Inspection & SBOM
+  # GitHub issues: #5, #6, #7, #8
+  # ─────────────────────────────────────────
+  epic-2: in-progress
+  2-1-validate-and-pull-docker-image: in-progress
+  2-2-extract-docker-image-filesystem: ready-for-dev
+  2-3-detect-linux-distribution-inside-image: ready-for-dev
+  2-4-extract-installed-system-and-language-packages: ready-for-dev
+  epic-2-retrospective: optional
+
+  # ─────────────────────────────────────────
+  # Epic 3: Vulnerability Detection Pipeline
+  # GitHub issues: #9, #10, #11
+  # ─────────────────────────────────────────
+  epic-3: backlog
+  3-1-set-up-local-cve-data-storage: ready-for-dev
+  3-2-map-installed-packages-to-cpe-identifiers: ready-for-dev
+  3-3-retrieve-cves-associated-with-packages-osv-nvd: ready-for-dev
+  epic-3-retrospective: optional
+
+  # ─────────────────────────────────────────
+  # Epic 4: Risk Assessment & Remediation
+  # GitHub issues: #12, #13, #19
+  # ─────────────────────────────────────────
+  epic-4: backlog
+  4-1-vulnerability-severity-ranking: ready-for-dev
+  4-2-image-risk-score-computation: ready-for-dev
+  4-3-patch-fix-recommendation-engine: ready-for-dev
+  4-4-remediation-fix-links-in-output: ready-for-dev
+  epic-4-retrospective: optional
+
+  # ─────────────────────────────────────────
+  # Epic 5: Output, Reporting & CI Integration
+  # GitHub issues: #14, #2
+  # ─────────────────────────────────────────
+  epic-5: backlog
+  5-1-rich-terminal-output-reporting: ready-for-dev
+  5-2-github-actions-ci-workflow: ready-for-dev
+  epic-5-retrospective: optional
+
+  # ─────────────────────────────────────────
+  # Epic 6: EUVD Vulnerability Source
+  # GitHub issue: #18
+  # ─────────────────────────────────────────
+  epic-6: backlog
+  6-1-add-euvd-vulnerability-source-support: ready-for-dev
+  epic-6-retrospective: optional
+
+  # ─────────────────────────────────────────
+  # Epic 7: REST API
+  # GitHub issue: #22
+  # ─────────────────────────────────────────
+  epic-7: backlog
+  7-1-fastapi-rest-api-server: ready-for-dev
+  epic-7-retrospective: optional
+
+  # ─────────────────────────────────────────
+  # Epic 8: Documentation & Support
+  # GitHub issues: #15, #28, #3
+  # ─────────────────────────────────────────
+  epic-8: backlog
+  8-1-documentation-threat-model: ready-for-dev
+  8-2-help-desk-in-tool-help: ready-for-dev
+  8-3-project-recap-status-summary: ready-for-dev
+  epic-8-retrospective: optional
