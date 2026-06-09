@@ -8,7 +8,12 @@ authors = [
 readme = "README.md"
 requires-python = "^3.12"
 dependencies = [
+    "sqlalchemy>=2.0",
+    "alembic>=1.13",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 
 [build-system]

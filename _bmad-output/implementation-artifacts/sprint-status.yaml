@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: "2026-06-08"
-last_updated: "2026-06-08"
+last_updated: "2026-06-08"  # story 3-1 done after code review
 project: Docklens
 project_key: NOKEY
 tracking_system: file-system
@@ -67,7 +67,7 @@ development_status:
   # GitHub issues: #9, #10, #11
   # ─────────────────────────────────────────
   epic-3: backlog
-  3-1-set-up-local-cve-data-storage: ready-for-dev
+  3-1-set-up-local-cve-data-storage: done
   3-2-map-installed-packages-to-cpe-identifiers: ready-for-dev
   3-3-retrieve-cves-associated-with-packages-osv-nvd: ready-for-dev
   epic-3-retrospective: optional
