@@ -1,5 +1,12 @@
 # Deferred Work
 
+## Deferred from: code review of 3-2-map-installed-packages-to-cpe-identifiers (2026-06-09)
+
+- Package name not lowercased before key lookup — `"OpenSSL"` misses `"debian:openssl"`; Debian/Alpine names are lowercase in practice so low real-world risk.
+- Debian epoch versions (e.g., `2:7.74.0`) produce malformed CPE — colon in version breaks CPE 2.3 format; spec explicitly accepts this for v1.
+- Debian multi-arch name suffixes (e.g., `libc6:amd64`) break lookup key — heuristic fallback still produces a CPE.
+- Whitespace-only version (`" "`) bypasses the None guard and produces a CPE with a space in the version field — unrealistic for Docker image package manifests.
+
 ## Deferred from: code review of 3-1-set-up-local-cve-data-storage (2026-06-08)
 
 - `get_cache()` singleton not thread-safe — no lock around `_cache_instance` assignment in `config/settings.py`. Relevant if the app ever uses threading.

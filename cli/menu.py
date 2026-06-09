@@ -7,6 +7,7 @@ from scanner.docker_image import validate_and_pull_image
 from scanner.extractor import extract_filesystem
 from scanner.packages import extract_packages
 from vulns.scanner import scan_packages
+from cve.cpe import enrich_packages
 
 app = typer.Typer(help="DockLens - Docker Image Security Scanner")
 
@@ -27,6 +28,7 @@ def scan(
     validate_and_pull_image(image)
     fs_path = extract_filesystem(image)
     packages = extract_packages(str(fs_path))
+    packages = enrich_packages(packages)
 
     typer.echo(f"Found {len(packages)} packages. Checking vulnerabilities...")
 
