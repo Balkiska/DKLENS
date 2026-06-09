@@ -1,0 +1,111 @@
+DOCKLENS - ÉTAT DES TÂCHES
+
+========================================
+BACKLOG
+========================================
+
+[#2] github actions
+État : Backlog
+
+[#3] recap three
+État : Backlog
+
+[#4] CLI
+État : Backlog
+
+[#5] Validate and pull Docker image
+État : Backlog
+
+[#6] Extract Docker image filesystem
+État : Backlog
+
+[#7] Detect Linux distribution inside image
+État : Backlog
+
+[#8] Extract installed system packages
+État : Backlog
+
+[#9] Set up local CVE data storage
+État : Backlog
+
+[#10] Map installed packages to CPE identifiers
+État : Backlog
+
+[#11] Retrieve CVEs associated with CPEs
+État : Backlog
+
+[#12] Vulnerability Severity Ranking
+État : Backlog
+
+[#13] Patch & Fix Recommendation Engine
+État : Backlog
+
+[#14] CLI Output & Reporting
+État : Backlog
+
+[#15] Documentation & Threat Model
+État : Backlog
+
+[#18] Add EUVD vulnerability source support
+État : Backlog
+
+[#19] Add remediation and fix links for vulnerabilities
+État : Backlog
+
+[#22] API
+État : Backlog
+
+[#28] Help desk
+État : Backlog
+
+
+========================================
+READY
+========================================
+
+Aucune tâche
+
+
+========================================
+IN PROGRESS
+========================================
+
+Aucune tâche
+
+
+========================================
+IN REVIEW
+========================================
+
+Aucune tâche
+
+
+========================================
+DONE
+========================================
+
+[#1] pre-commit hooks
+État : Done
+
+[#16] Starting the Devbox Env
+État : Done
+
+[#20] .gitignore file
+État : Done
+
+[#21] adding poetry to the project
+État : Done
+
+[#24] devbox starting when we open the repo directory
+État : Done
+
+
+========================================
+RÉCAPITULATIF
+========================================
+
+Backlog     : 18
+Ready       : 0
+In Progress : 0
+In Review   : 0
+Done        : 5

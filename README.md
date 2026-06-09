@@ -19,6 +19,34 @@ run devbox
 devbox shell
 ```
 
+# Pre-commit Hooks
+With every new commit, verification hooks will be executed. To bypass them, run the following command:
+```
+git commit -m "what my commit does blablabla" --no-verify
+```
+### Pre-commit tools
+**pre-commit-hooks**: repository hygiene checks
+- trailing whitespace, end-of-file, YAML validation, large files, etc.
+-> https://github.com/pre-commit/pre-commit-hooks
+
+**ruff**: linting + auto-fix + import sorting + code formatting
+- replaces flake8, isort, and black
+-> https://docs.astral.sh/ruff/
+
+**gitleaks**: secret detection
+- detects API keys, tokens, passwords (160+ secret types)
+-> https://github.com/gitleaks/gitleaks
+# Auto-activation (direnv)
+The devbox environment activates automatically when entering the repository directory.
+This requires a **one-time setup per machine**:
+```
+sudo apt install direnv
+echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+source ~/.bashrc
+direnv allow
+```
+After that, opening the repository directory will activate the environment automatically.
+
 ## License
 
 This project is licensed under a Non-Commercial license.
