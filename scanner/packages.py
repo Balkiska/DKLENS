@@ -16,12 +16,30 @@ def detect_distro(fs_path: str) -> str:
     return "unknown"
 
 
+def get_alpine_version(fs_path: str) -> str:
+    """
+    Read Alpine version from /etc/alpine-release.
+    Returns ecosystem string like 'Alpine:v3.18'.
+    """
+    release_file = os.path.join(fs_path, "etc", "alpine-release")
+    try:
+        with open(release_file) as f:
+            version = f.read().strip()
+            # keep only major.minor: 3.18.12 -> 3.18
+            parts = version.split(".")
+            short = f"{parts[0]}.{parts[1]}"
+            return f"Alpine:v{short}"
+    except Exception:
+        return "Alpine"
+
+
 def parse_apk_packages(fs_path: str) -> list:
     """
     Parse Alpine packages from /lib/apk/db/installed.
     Returns a list of dicts with name, version, ecosystem.
     """
     db_path = os.path.join(fs_path, "lib", "apk", "db", "installed")
+    ecosystem = get_alpine_version(fs_path)
     packages = []
     current = {}
 
@@ -33,7 +51,7 @@ def parse_apk_packages(fs_path: str) -> list:
             elif line.startswith("V:"):
                 current["version"] = line[2:]
             elif line == "" and "name" in current and "version" in current:
-                current["ecosystem"] = "Alpine"
+                current["ecosystem"] = ecosystem
                 packages.append(current)
                 current = {}
 
