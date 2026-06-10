@@ -16,8 +16,24 @@ def scan_packages(packages: list) -> list:
 
     for pkg in packages:
         name = pkg["name"]
-        version = pkg["version"]
+        version = pkg.get("version")
         ecosystem = pkg["ecosystem"]
+
+        if not version:
+            findings.append({
+                "package": name,
+                "version": None,
+                "severity": "NONE",
+                "cve": None,
+                "fix": None,
+                "command": None,
+                "url": None,
+                "euvd_id": None,
+                "euvd_score": None,
+                "euvd_url": None,
+                "description": None,
+            })
+            continue
 
         print(f"[INFO] Checking {name} {version}...")
         vulns = query_osv(name, version, ecosystem)

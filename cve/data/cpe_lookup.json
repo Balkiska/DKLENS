@@ -1,0 +1,22 @@
+{
+  "debian:openssl": {"vendor": "openssl", "product": "openssl"},
+  "debian:libssl1.1": {"vendor": "openssl", "product": "openssl"},
+  "debian:curl": {"vendor": "haxx", "product": "curl"},
+  "debian:libcurl4": {"vendor": "haxx", "product": "curl"},
+  "debian:bash": {"vendor": "gnu", "product": "bash"},
+  "debian:zlib1g": {"vendor": "zlib", "product": "zlib"},
+  "debian:libc6": {"vendor": "gnu", "product": "glibc"},
+  "debian:python3": {"vendor": "python", "product": "python"},
+  "debian:libpng16-16": {"vendor": "libpng", "product": "libpng"},
+  "debian:git": {"vendor": "git-scm", "product": "git"},
+  "alpine:openssl": {"vendor": "openssl", "product": "openssl"},
+  "alpine:curl": {"vendor": "haxx", "product": "curl"},
+  "alpine:bash": {"vendor": "gnu", "product": "bash"},
+  "alpine:zlib": {"vendor": "zlib", "product": "zlib"},
+  "alpine:musl": {"vendor": "musl-libc", "product": "musl"},
+  "alpine:python3": {"vendor": "python", "product": "python"},
+  "alpine:git": {"vendor": "git-scm", "product": "git"},
+  "pypi:requests": {"vendor": "python-requests", "product": "requests"},
+  "pypi:cryptography": {"vendor": "cryptography-developers", "product": "cryptography"},
+  "pypi:pillow": {"vendor": "python-pillow", "product": "pillow"}
+}
