@@ -10,7 +10,7 @@
     "kubectl@latest",
     "kubernetes-helm@latest",
     "pre-commit@4.5.1",
-    "python310Packages.mypy"
+    "python310Packages.mypy",
     "poetry@latest"
   ],
   "env": {
@@ -22,7 +22,7 @@
     "init_hook": [
       "echo '🐳 DockLens devbox ready'",
       "python --version",
-      "pre-commit install"
+      "pre-commit install",
       "poetry install"
     ]
   }
