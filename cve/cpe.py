@@ -28,7 +28,8 @@ def enrich_packages(packages: list) -> list:
         if not version or not name:
             cpe = None
         else:
-            key = f"{ecosystem.lower()}:{name}"
+            base_ecosystem = ecosystem.split(":", 1)[0].lower()
+            key = f"{base_ecosystem}:{name}"
             entry = LOOKUP_TABLE.get(key)
             if entry:
                 vendor = entry.get("vendor", name)
