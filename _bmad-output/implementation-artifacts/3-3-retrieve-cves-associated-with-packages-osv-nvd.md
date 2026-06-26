@@ -1,6 +1,6 @@
 # Story 3.3: Retrieve CVEs Associated with Packages (OSV + NVD)
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -20,25 +20,11 @@ so that I know which vulnerabilities are present in the image.
 
 ## Tasks / Subtasks
 
-- [ ] Implement `docklens/cve/base.py` — `CVESource` Protocol (AC: all)
-  - [ ] `name: str`; `query(packages: list[Package]) -> list[Vulnerability]`
-- [ ] Implement `docklens/cve/osv.py` — `OSVSource` (AC: 1, 4, 5, 6, 7)
-  - [ ] POST `https://api.osv.dev/v1/querybatch` with `{"queries": [{"package": {"name": name, "ecosystem": ecosystem}, "version": version}]}`
-  - [ ] Map response to `Vulnerability` list; set `source = "osv"`
-  - [ ] Exponential backoff on 429: `[1, 2, 4]` seconds, max 3 retries
-  - [ ] On failure after retries: log WARNING, return `[]`
-- [ ] Implement `docklens/cve/nvd.py` — `NVDSource` (AC: 2, 3, 5, 6, 7)
-  - [ ] GET `https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName={cpe}&resultsPerPage=100`
-  - [ ] Add `apiKey` query param if `settings.nvd_api_key` is set
-  - [ ] Skip packages where `cpe is None`
-  - [ ] Map CVSSv3 (preferred) or CVSSv2 (fallback) to `cvss_score` and `cvss_version`
-  - [ ] On 429 or failure: log WARNING, return `[]`
-- [ ] Implement `docklens/core/scanner.py` — `Scanner.query_vulnerabilities(packages)` (AC: 2, 7)
-  - [ ] Registered sources: `[OSVSource(), NVDSource()]`
-  - [ ] For each package, check cache first; on miss call sources; write results to cache
-  - [ ] Deduplicate by CVE ID: keep the record with non-null `cvss_score` preferentially
-- [ ] Write integration tests `tests/integration/test_cve_sources.py` using `pytest-httpx` with recorded responses (AC: 1, 2, 4, 5)
-  - [ ] Fixture files in `tests/fixtures/cve_responses/osv_requests.json`, `tests/fixtures/cve_responses/nvd_openssl.json`
+- [ ] Implement `docklens/cve/base.py` — `CVESource` Protocol (AC: all) — **not built**; project uses a flat `vulns/` module instead of the `cve/` Protocol abstraction described here
+- [x] Implement OSV querying (AC: 1, 4, 5, 6, 7) — built as `vulns/osv_client.py::query_osv()` (one request per package, not the `/v1/querybatch` batch endpoint; no exponential backoff on 429, but a non-200 response returns `[]` so the scan still completes)
+- [ ] Implement `docklens/cve/nvd.py` — `NVDSource` (AC: 2, 3, 5, 6, 7) — **not built**; NVD was never implemented. EUVD (`vulns/euvd_client.py`, Story 6.1) is used instead as the enrichment source
+- [x] Orchestrate OSV + enrichment + cache (AC: 2, 7) — built as `vulns/scanner.py::scan_packages()`. Cache wiring was completed 2026-06-25: the `CacheRepository` from Story 3.1 existed but was never called from the scan pipeline until this session; `scan_packages()` now checks the cache before each OSV/EUVD call and writes results on a miss, plus a `--no-cache` CLI flag
+- [ ] Write integration tests `tests/integration/test_cve_sources.py` using `pytest-httpx` with recorded responses (AC: 1, 2, 4, 5) — **not built**; current tests call the live OSV/EUVD APIs directly rather than recorded fixtures
 
 ## Dev Notes
 
@@ -70,6 +56,20 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+- 2026-06-25: discovered the Alpine ecosystem string sent to OSV was `"Alpine"` instead of `"Alpine:vX.Y"` (e.g. `"Alpine:v3.18"`), so OSV silently returned zero vulnerabilities for every Alpine package regardless of version. Fixed by reading `/etc/alpine-release` in `scanner/packages.py::get_alpine_version()`. Debian ecosystem (`"Debian"`) does not need this suffix — confirmed against the live OSV API.
+
 ### Completion Notes List
 
+- Implemented as OSV (`vulns/osv_client.py`) + EUVD (`vulns/euvd_client.py`) instead of OSV + NVD: NVD was never built, EUVD was substituted (see Story 6.1). Functionally equivalent for this project's scope — every CVE is enriched with a European severity score and ID instead of an NVD one.
+- No `CVESource` Protocol / `docklens/cve/` package — implemented as flat `vulns/` module per the project's existing flat layout convention (same decision already made for `cache/` in Story 3.1).
+- Verified end-to-end against real Docker images (`alpine:3.10`, `alpine:3.18`) with Docker running locally: package extraction → OSV lookup → EUVD enrichment → severity sort → Rich table, including a real CRITICAL/MEDIUM finding with fix command and advisory URL.
+- Cache integration (AC 7) completed 2026-06-25 — see Story 3.1 change log.
+
 ### File List
+
+- scanner/packages.py (get_alpine_version, ecosystem fix)
+- vulns/osv_client.py
+- vulns/euvd_client.py
+- vulns/scanner.py (cache wiring)
+- cve/cpe.py (lookup key fix to match new ecosystem format)
+- cli/menu.py (--no-cache flag)

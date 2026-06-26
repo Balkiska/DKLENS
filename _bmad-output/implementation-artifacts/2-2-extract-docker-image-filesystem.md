@@ -1,6 +1,6 @@
 # Story 2.2: Extract Docker Image Filesystem
 
-Status: in-progress
+Status: done
 
 ## Story
 

@@ -1,6 +1,6 @@
 # Story 2.4: Extract Installed System and Language Packages
 
-Status: in-progress
+Status: done
 
 ## Story
 

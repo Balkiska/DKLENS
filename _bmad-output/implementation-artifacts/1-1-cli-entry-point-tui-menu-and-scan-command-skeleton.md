@@ -1,6 +1,6 @@
 # Story 1.1: CLI Entry Point, TUI Menu, and Scan Command Skeleton
 
-Status: in-progress
+Status: done
 
 ## Story
 
