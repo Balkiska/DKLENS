@@ -1,6 +1,6 @@
 # Story 2.3: Detect Linux Distribution Inside Image
 
-Status: in-progress
+Status: done
 
 ## Story
 

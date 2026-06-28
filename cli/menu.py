@@ -11,14 +11,19 @@ from cve.cpe import enrich_packages
 
 app = typer.Typer(help="DockLens - Docker Image Security Scanner")
 
+
 @app.callback()
 def main():
     pass
+
 
 @app.command()
 def scan(
     image: str = typer.Argument(..., help="Docker image to scan"),
     format: str = typer.Option("table", help="Output format: table|json"),
+    no_cache: bool = typer.Option(
+        False, "--no-cache", help="Bypass the local vulnerability cache"
+    ),
 ):
     """
     Scan a Docker image for known vulnerabilities.
@@ -32,7 +37,7 @@ def scan(
 
     typer.echo(f"Found {len(packages)} packages. Checking vulnerabilities...")
 
-    findings = scan_packages(packages)
+    findings = scan_packages(packages, no_cache=no_cache)
 
     if format == "json":
         show_json(image, findings)

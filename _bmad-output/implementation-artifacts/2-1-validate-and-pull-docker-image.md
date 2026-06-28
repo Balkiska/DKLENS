@@ -1,6 +1,6 @@
 # Story 2.1: Validate and Pull Docker Image
 
-Status: in-progress
+Status: done
 
 ## Story
 
