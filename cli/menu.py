@@ -2,7 +2,7 @@
 # Main CLI entry point for DockLens.
 
 import typer
-from cli.output import show_table, show_json
+from cli.output import show_table, show_json, export_pdf
 from scanner.docker_image import validate_and_pull_image
 from scanner.extractor import extract_filesystem
 from scanner.packages import extract_packages
@@ -21,9 +21,8 @@ def main():
 def scan(
     image: str = typer.Argument(..., help="Docker image to scan"),
     format: str = typer.Option("table", help="Output format: table|json"),
-    no_cache: bool = typer.Option(
-        False, "--no-cache", help="Bypass the local vulnerability cache"
-    ),
+    no_cache: bool = typer.Option(False, "--no-cache", help="Bypass the local vulnerability cache"),
+    export: str = typer.Option(None, "--export", help="Export to file: rapport.pdf or rapport.json"),
 ):
     """
     Scan a Docker image for known vulnerabilities.
@@ -43,3 +42,13 @@ def scan(
         show_json(image, findings)
     else:
         show_table(image, findings)
+
+    if export:
+        if export.endswith(".pdf"):
+            export_pdf(image, findings, export)
+            typer.echo(f"PDF report saved: {export}")
+        elif export.endswith(".json"):
+            import json
+            with open(export, "w") as f:
+                json.dump({"image": image, "findings": findings}, f, indent=2)
+            typer.echo(f"JSON report saved: {export}")
