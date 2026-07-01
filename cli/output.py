@@ -18,7 +18,8 @@ def show_table(image: str, findings: list):
     table.add_column("EUVD Score")
     table.add_column("Fix version")
     table.add_column("Command")
-
+    table.add_column("Advisory")
+    
     for f in findings:
         table.add_row(
             f["package"],
@@ -29,7 +30,10 @@ def show_table(image: str, findings: list):
             str(f.get("euvd_score")) if f.get("euvd_score") else "-",
             f.get("fix") or "-",
             f.get("command") or "-",
+            f.get("advisory_url") or "-",
+            
         )
+
 
     console.print(table)
 

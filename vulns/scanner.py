@@ -91,6 +91,7 @@ def scan_packages(packages: list, no_cache: bool = False) -> list:
                     "fix": vuln["fixed"],
                     "command": vuln["command"],
                     "url": vuln["url"],
+                    "advisory_url": vuln.get("advisory_url"),
                     "euvd_id": euvd.get("euvd_id"),
                     "euvd_score": euvd.get("base_score"),
                     "euvd_url": euvd.get("url"),

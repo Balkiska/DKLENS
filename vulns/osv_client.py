@@ -55,25 +55,25 @@ def get_fix_command(package_name: str, fixed_version: str, ecosystem: str) -> st
 def query_osv(package_name: str, version: str, ecosystem: str) -> list:
     """
     Query OSV API for vulnerabilities affecting a specific package version.
-    Returns a list of dicts with id, description, fixed, severity, command, url.
+    Returns a list of dicts with id, description, fixed, severity, command, url, advisory_url.
     """
     payload = {
         "package": {"name": package_name, "ecosystem": ecosystem},
         "version": version,
     }
-
     response = httpx.post(OSV_API_URL, json=payload, timeout=10)
     if response.status_code != 200:
         return []
 
     data = response.json()
     vulns = data.get("vulns", [])
-
     results = []
+
     for vuln in vulns:
         vuln_id = vuln.get("id", "UNKNOWN")
         description = vuln.get("details", "No description available.")
 
+        # extract fixed version
         fixed = None
         for affected in vuln.get("affected", []):
             for r in affected.get("ranges", []):
@@ -81,6 +81,14 @@ def query_osv(package_name: str, version: str, ecosystem: str) -> list:
                     if "fixed" in event:
                         fixed = event["fixed"]
 
+        # extract upstream advisory link from references
+        advisory_url = None
+        for ref in vuln.get("references", []):
+            if ref.get("type") == "ADVISORY":
+                advisory_url = ref.get("url")
+                break
+
+        # extract and parse severity
         severity_score = None
         for s in vuln.get("severity", []):
             if s.get("type") == "CVSS_V3":
@@ -90,15 +98,14 @@ def query_osv(package_name: str, version: str, ecosystem: str) -> list:
         url = get_advisory_url(vuln_id)
         command = get_fix_command(package_name, fixed, ecosystem)
 
-        results.append(
-            {
-                "id": vuln_id,
-                "description": description,
-                "fixed": fixed,
-                "severity": severity,
-                "command": command,
-                "url": url,
-            }
-        )
+        results.append({
+            "id": vuln_id,
+            "description": description,
+            "fixed": fixed,
+            "severity": severity,
+            "command": command,
+            "url": url,
+            "advisory_url": advisory_url,
+        })
 
     return results
