@@ -19,7 +19,7 @@ so that I can navigate directly to the fix from my terminal.
 - [ ] Add `format_link(url: str | None, label: str) -> str` to `docklens/cli/output.py` (AC: 1–3)
   - [ ] If `url is None` → return `"—"`
   - [ ] Detect OSC-8 support: check `os.environ.get("TERM")` and Rich's `Console().is_terminal`
-  - [ ] OSC-8 format: `f"\x1b]8;;{url}\x1b\\{label}\x1b]8;;\x1b\\"` 
+  - [ ] OSC-8 format: `f"\x1b]8;;{url}\x1b\\{label}\x1b]8;;\x1b\\"`
   - [ ] Fallback: return `url` (plain string)
 - [ ] Use `format_link()` in the CVE table's Link column rendering (Story 5.1 will wire the full table; this story adds the helper and connects it to the vulnerability model)
 - [ ] Write unit tests `tests/unit/test_output.py` — test `format_link` for all three cases (AC: 1–3)

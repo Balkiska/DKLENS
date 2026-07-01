@@ -32,9 +32,7 @@ from pathlib import Path
 try:
     import tomllib
 except ImportError:
-    sys.stderr.write(
-        "error: Python 3.11+ is required (stdlib `tomllib` not found).\n"
-    )
+    sys.stderr.write("error: Python 3.11+ is required (stdlib `tomllib` not found).\n")
     sys.exit(3)
 
 
@@ -139,11 +137,16 @@ def main():
         description="Resolve BMad central config using four-layer TOML merge.",
     )
     parser.add_argument(
-        "--project-root", "-p", required=True,
+        "--project-root",
+        "-p",
+        required=True,
         help="Absolute path to the project root (contains _bmad/)",
     )
     parser.add_argument(
-        "--key", "-k", action="append", default=[],
+        "--key",
+        "-k",
+        action="append",
+        default=[],
         help="Dotted field path to resolve (repeatable). Omit for full dump.",
     )
     args = parser.parse_args()
