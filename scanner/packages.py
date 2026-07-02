@@ -7,10 +7,12 @@ import os
 def detect_distro(fs_path: str) -> str:
     """
     Detect the Linux distribution from the extracted filesystem.
-    Returns 'alpine', 'debian' or 'unknown'.
+    Returns 'alpine', 'wolfi', 'debian' or 'unknown'.
     """
     if os.path.exists(os.path.join(fs_path, "lib", "apk", "db", "installed")):
-        return "alpine"
+        if os.path.exists(os.path.join(fs_path, "etc", "alpine-release")):
+            return "alpine"
+        return "wolfi"
     if os.path.exists(os.path.join(fs_path, "var", "lib", "dpkg", "status")):
         return "debian"
     return "unknown"
@@ -28,13 +30,14 @@ def get_alpine_version(fs_path: str) -> str:
     return f"Alpine:v{parts[0]}.{parts[1]}"
 
 
-def parse_apk_packages(fs_path: str) -> list:
+def parse_apk_packages(fs_path: str, ecosystem: str = None) -> list:
     """
-    Parse Alpine packages from /lib/apk/db/installed.
+    Parse Alpine/Wolfi packages from /lib/apk/db/installed.
     Returns a list of dicts with name, version, ecosystem.
     """
     db_path = os.path.join(fs_path, "lib", "apk", "db", "installed")
-    ecosystem = get_alpine_version(fs_path)
+    if ecosystem is None:
+        ecosystem = get_alpine_version(fs_path)
     packages = []
     current = {}
 
@@ -87,6 +90,8 @@ def extract_packages(fs_path: str) -> list:
 
     if distro == "alpine":
         return parse_apk_packages(fs_path)
+    elif distro == "wolfi":
+        return parse_apk_packages(fs_path, ecosystem="Wolfi")
     elif distro == "debian":
         return parse_dpkg_packages(fs_path)
     else:

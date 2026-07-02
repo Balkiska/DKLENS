@@ -9,6 +9,14 @@ Docker image vulnerability scanner with an interactive terminal menu.
 - Suggests fix versions and upgrade commands
 - Exports results as PDF or JSON
 
+## Supported distributions
+
+| Distribution | Package format | Example images |
+|---|---|---|
+| Alpine Linux | APK | `alpine`, `python:alpine`, `node:alpine`, … |
+| Wolfi / Chainguard | APK | `cgr.dev/chainguard/*`, `wolfi-base`, … |
+| Debian / Ubuntu | dpkg | `debian`, `ubuntu`, `python`, `node`, … |
+
 ---
 
 ## Requirements

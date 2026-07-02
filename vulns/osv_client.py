@@ -44,7 +44,7 @@ def get_advisory_url(vuln_id: str) -> str:
 def get_fix_command(package_name: str, fixed_version: str, ecosystem: str) -> str:
     if not fixed_version:
         return "No fix available yet."
-    if ecosystem.startswith("Alpine"):
+    if ecosystem.startswith("Alpine") or ecosystem == "Wolfi":
         return f"apk add {package_name}={fixed_version}"
     elif ecosystem in ("Debian", "Ubuntu"):
         return f"apt-get install {package_name}={fixed_version}"
@@ -98,14 +98,16 @@ def query_osv(package_name: str, version: str, ecosystem: str) -> list:
         url = get_advisory_url(vuln_id)
         command = get_fix_command(package_name, fixed, ecosystem)
 
-        results.append({
-            "id": vuln_id,
-            "description": description,
-            "fixed": fixed,
-            "severity": severity,
-            "command": command,
-            "url": url,
-            "advisory_url": advisory_url,
-        })
+        results.append(
+            {
+                "id": vuln_id,
+                "description": description,
+                "fixed": fixed,
+                "severity": severity,
+                "command": command,
+                "url": url,
+                "advisory_url": advisory_url,
+            }
+        )
 
     return results
