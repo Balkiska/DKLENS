@@ -7,13 +7,21 @@ import os
 def detect_distro(fs_path: str) -> str:
     """
     Detect the Linux distribution from the extracted filesystem.
-    Returns 'alpine', 'wolfi', 'debian' or 'unknown'.
+    Returns 'alpine', 'wolfi', 'ubuntu', 'debian' or 'unknown'.
     """
     if os.path.exists(os.path.join(fs_path, "lib", "apk", "db", "installed")):
         if os.path.exists(os.path.join(fs_path, "etc", "alpine-release")):
             return "alpine"
         return "wolfi"
     if os.path.exists(os.path.join(fs_path, "var", "lib", "dpkg", "status")):
+        os_release = os.path.join(fs_path, "etc", "os-release")
+        try:
+            with open(os_release, "r", errors="replace") as f:
+                for line in f:
+                    if line.startswith("ID=") and "ubuntu" in line.lower():
+                        return "ubuntu"
+        except Exception:
+            pass
         return "debian"
     return "unknown"
 
@@ -56,7 +64,7 @@ def parse_apk_packages(fs_path: str, ecosystem: str = None) -> list:
     return packages
 
 
-def parse_dpkg_packages(fs_path: str) -> list:
+def parse_dpkg_packages(fs_path: str, ecosystem: str = "Debian") -> list:
     """
     Parse Debian/Ubuntu packages from /var/lib/dpkg/status.
     Returns a list of dicts with name, version, ecosystem.
@@ -73,7 +81,7 @@ def parse_dpkg_packages(fs_path: str) -> list:
             elif line.startswith("Version:"):
                 current["version"] = line.split(":", 1)[1].strip()
             elif line == "" and "name" in current and "version" in current:
-                current["ecosystem"] = "Debian"
+                current["ecosystem"] = ecosystem
                 packages.append(current)
                 current = {}
 
@@ -92,6 +100,8 @@ def extract_packages(fs_path: str) -> list:
         return parse_apk_packages(fs_path)
     elif distro == "wolfi":
         return parse_apk_packages(fs_path, ecosystem="Wolfi")
+    elif distro == "ubuntu":
+        return parse_dpkg_packages(fs_path, ecosystem="Ubuntu")
     elif distro == "debian":
         return parse_dpkg_packages(fs_path)
     else:

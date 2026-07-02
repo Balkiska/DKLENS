@@ -15,7 +15,8 @@ Docker image vulnerability scanner with an interactive terminal menu.
 |---|---|---|
 | Alpine Linux | APK | `alpine`, `python:alpine`, `node:alpine`, … |
 | Wolfi / Chainguard | APK | `cgr.dev/chainguard/*`, `wolfi-base`, … |
-| Debian / Ubuntu | dpkg | `debian`, `ubuntu`, `python`, `node`, … |
+| Debian | dpkg | `debian`, `python`, `node`, … |
+| Ubuntu | dpkg | `ubuntu`, `python:slim`, … |
 
 ---
 
