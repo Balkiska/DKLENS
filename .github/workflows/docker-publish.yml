@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/docklens
+  IMAGE_NAME: balkiska/docklens
 
 jobs:
   build-and-push:
