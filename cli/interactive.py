@@ -1,7 +1,9 @@
 import json
 import sys
 
+from rich.align import Align
 from rich.console import Console
+from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.style import Style
 from rich.table import Table
@@ -63,8 +65,10 @@ SEVERITY_COLOR = {
 
 
 def _show_title():
-    console.print(f"[{ROSE}]{TITLE}[/{ROSE}]")
-    console.print(f"[{ROSE}]  Docker Image Security Scanner[/{ROSE}]\n")
+    content = (
+        f"[{ROSE}]{TITLE}[/{ROSE}]\n\n[{ROSE}]  Docker Image Security Scanner[/{ROSE}]"
+    )
+    console.print(Panel(content, border_style=ROSE, expand=True))
 
 
 def _list_local_images() -> list:
@@ -141,7 +145,14 @@ def _show_results(
         )
 
     if not displayed:
-        console.print(NO_VULN_MESSAGE, style=ROSE)
+        console.print(
+            Panel(
+                Align.center(NO_VULN_MESSAGE),
+                style=ROSE,
+                border_style=ROSE,
+                expand=True,
+            )
+        )
     else:
         console.print(table)
 
