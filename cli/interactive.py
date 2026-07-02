@@ -125,6 +125,7 @@ def _show_results(
     table.add_column("Version")
     table.add_column("Severity")
     table.add_column("CVE")
+    table.add_column("CPE")
     table.add_column("Fixed in")
     table.add_column("Command")
     table.add_column("EUVD ID")
@@ -138,6 +139,7 @@ def _show_results(
             f.get("version") or "-",
             f"[{color}]{sev}[/{color}]",
             f.get("cve") or "-",
+            f.get("cpe") or "-",
             f.get("fix") or "-",
             f.get("command") or "-",
             f.get("euvd_id") or "-",
