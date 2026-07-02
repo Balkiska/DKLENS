@@ -1,101 +1,158 @@
 # Docklens
-Container/Docker image vulnerability scanner
 
-A Python CLI tool that:
-- Takes a Docker image
-- Analyses the installed packages
-- Compares them with a CVE database
-- Classifies vulnerabilities by severity
-- Suggests patches/upgrades
-- Displays everything in a clean terminal menu
+Docker image vulnerability scanner with an interactive terminal menu.
 
-# Environnement
-install devbox
-```
+- Lists your local Docker images
+- Extracts installed packages from the image filesystem
+- Checks them against CVE databases (OSV + EUVD)
+- Classifies vulnerabilities by severity (CRITICAL → LOW)
+- Suggests fix versions and upgrade commands
+- Exports results as PDF or JSON
+
+---
+
+## Requirements
+
+- [Docker](https://docs.docker.com/get-docker/) (running)
+- [Devbox](https://www.jetify.com/devbox/docs/installing_devbox/)
+
+```bash
 curl -fsSL https://get.jetify.com/devbox | bash
 ```
-run devbox
-```
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/Balkiska/Docklens.git
+cd Docklens
 devbox shell
 ```
 
-# Pre-commit Hooks
-With every new commit, verification hooks will be executed. To bypass them, run the following command:
-```
-git commit -m "what my commit does blablabla" --no-verify
-```
-### Pre-commit tools
-**pre-commit-hooks**: repository hygiene checks
-- trailing whitespace, end-of-file, YAML validation, large files, etc.
--> https://github.com/pre-commit/pre-commit-hooks
+Devbox automatically installs Python, Poetry, and all dependencies on first run.
 
-**ruff**: linting + auto-fix + import sorting + code formatting
-- replaces flake8, isort, and black
--> https://docs.astral.sh/ruff/
+---
 
-**gitleaks**: secret detection
-- detects API keys, tokens, passwords (160+ secret types)
--> https://github.com/gitleaks/gitleaks
-# Auto-activation (direnv)
-The devbox environment activates automatically when entering the repository directory.
-This requires a **one-time setup per machine**:
+## Usage
+
+### Interactive menu (recommended)
+
+```bash
+./docklens start
 ```
+
+This opens a full interactive menu:
+
+1. Select a local Docker image with arrow keys
+2. Docklens scans it automatically
+3. After the scan, choose what to do:
+   - Filter by severity (CRITICAL / HIGH / MEDIUM)
+   - Export as PDF
+   - Export as JSON
+   - Scan another image
+   - Quit
+
+> No need to run `devbox shell` first — `./docklens start` works directly.
+
+### CLI scan (non-interactive)
+
+First enter the devbox shell:
+```bash
+devbox shell
+```
+
+Then run:
+```bash
+# Scan and display results as a table
+poetry run python main.py scan <image>
+
+# Output as JSON
+poetry run python main.py scan <image> --format json
+
+# Export to PDF
+poetry run python main.py scan <image> --export report.pdf
+
+# Bypass the local cache
+poetry run python main.py scan <image> --no-cache
+```
+
+---
+
+## Development
+
+### Run the app
+
+```bash
+./docklens start
+```
+
+### Required for unit tests
+
+```bash
+devbox shell
+```
+
+### Run unit tests
+```bash
+poetry run pytest tests/unit/ -v
+```
+
+### Run lint
+
+```bash
+poetry run ruff check .
+```
+
+### Auto-fix lint errors
+
+```bash
+poetry run ruff check . --fix
+```
+
+---
+
+## Local cache
+
+Scan results are cached locally in SQLite so the same package is never looked up twice.
+
+```bash
+# Inspect the cache
+sqlite3 ~/.cache/docklens/cache.db "SELECT package_key, source, expires_at FROM cached_vulnerabilities;"
+```
+
+---
+
+## Pre-commit hooks
+
+Hooks run automatically on every commit:
+
+- **ruff** — lint, format, import sorting
+- **pre-commit-hooks** — trailing whitespace, YAML validation, large files
+- **gitleaks** — secret detection (API keys, tokens, passwords)
+
+To bypass hooks (not recommended):
+
+```bash
+git commit -m "my message" --no-verify
+```
+
+---
+
+## Auto-activation (optional)
+
+The devbox environment can activate automatically when entering the project directory:
+
+```bash
 sudo apt install direnv
 echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
 source ~/.bashrc
 direnv allow
 ```
-After that, opening the repository directory will activate the environment automatically.
 
-## Testing the CVE cache (Story 3.1)
-
-The cache module stores vulnerability query results in a local SQLite database so the same package is never looked up twice.
-
-Dependencies (`sqlalchemy`, `alembic`) are declared in `pyproject.toml` and installed automatically when the devbox shell starts (`poetry install`).
-
-**Run the unit tests:**
-```
-pytest tests/unit/test_cache_repository.py -v
-```
-
-You should see 9 tests pass, covering:
-- Cache hit (fresh entry returned)
-- Cache miss (unknown package → `None`)
-- Expiry (old entry ignored → `None`)
-- `--no-cache` flag (reads and writes both skipped)
-- Corrupted DB (warning logged, scan continues)
-
-**Try it manually in a Python shell:**
-```python
-from pathlib import Path
-from cache.repository import CacheRepository
-
-# Opens (or creates) ~/.cache/docklens/cache.db automatically
-cache = CacheRepository(db_path=Path.home() / ".cache/docklens/cache.db")
-
-# Store some fake results
-cache.set("deb:libssl1.1:1.1.1f", "osv", [{"id": "CVE-2023-1234", "severity": "HIGH"}])
-
-# Read them back — returns the list, no HTTP call
-print(cache.get("deb:libssl1.1:1.1.1f", "osv"))
-
-# Unknown package → None (would trigger a real API call)
-print(cache.get("deb:unknown:0.0.1", "osv"))
-```
-
-**Disable the cache** (useful for debugging):
-```python
-cache = CacheRepository(db_path=..., no_cache=True)
-# get() always returns None, set() does nothing
-```
-
-The database file lives at `~/.cache/docklens/cache.db`. You can inspect it with any SQLite viewer or:
-```
-sqlite3 ~/.cache/docklens/cache.db "SELECT package_key, source, expires_at FROM cached_vulnerabilities;"
-```
+---
 
 ## License
 
-This project is licensed under a Non-Commercial license.
-Commercial use (including SaaS, resale, or paid services) requires prior written permission from the author.
-See LICENSE for details.
+Non-Commercial license. Commercial use requires prior written permission from the authors.
+See [LICENSE](LICENSE) for details.
