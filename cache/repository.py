@@ -5,10 +5,10 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from cache.models import Base, CachedVulnerability
+from cache.models import CachedVulnerability
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,9 @@ class CacheRepository:
             cache.set("deb:libssl1.1:1.1.1f", "osv", result)
     """
 
-    def __init__(self, db_path: Path, no_cache: bool = False, ttl_hours: int = 24) -> None:
+    def __init__(
+        self, db_path: Path, no_cache: bool = False, ttl_hours: int = 24
+    ) -> None:
         self.no_cache = no_cache
         self._disabled = False
         self._engine = None
@@ -40,7 +42,9 @@ class CacheRepository:
             self._engine = create_engine(f"sqlite:///{db_path}")
             self._run_migrations(db_path)
         except Exception as exc:
-            logger.warning("Cache DB error on startup, cache disabled for this session: %s", exc)
+            logger.warning(
+                "Cache DB error on startup, cache disabled for this session: %s", exc
+            )
             self._disabled = True
 
     # ------------------------------------------------------------------ #
@@ -76,14 +80,24 @@ class CacheRepository:
                 try:
                     return json.loads(row.payload)
                 except (json.JSONDecodeError, TypeError):
-                    logger.warning("Corrupted cache payload for %s/%s, treating as miss", package_key, source)
+                    logger.warning(
+                        "Corrupted cache payload for %s/%s, treating as miss",
+                        package_key,
+                        source,
+                    )
                     return None
         except SQLAlchemyError as exc:
             logger.warning("Cache read error, disabling cache: %s", exc)
             self._disabled = True
             return None
 
-    def set(self, package_key: str, source: str, vulnerabilities: list, ttl_hours: int | None = None) -> None:
+    def set(
+        self,
+        package_key: str,
+        source: str,
+        vulnerabilities: list,
+        ttl_hours: int | None = None,
+    ) -> None:
         """
         Store vulnerability results in the cache with an expiry time.
         Does nothing when no_cache=True or the cache is disabled.
@@ -97,7 +111,11 @@ class CacheRepository:
         try:
             serialized = json.dumps(vulnerabilities)
         except (TypeError, ValueError) as exc:
-            logger.warning("Cache: cannot serialize vulnerabilities for %s, skipping set: %s", package_key, exc)
+            logger.warning(
+                "Cache: cannot serialize vulnerabilities for %s, skipping set: %s",
+                package_key,
+                exc,
+            )
             return
 
         try:
@@ -132,6 +150,8 @@ class CacheRepository:
         from alembic.config import Config as AlembicConfig
 
         cfg = AlembicConfig()
-        cfg.set_main_option("script_location", str(Path(__file__).parent / "migrations"))
+        cfg.set_main_option(
+            "script_location", str(Path(__file__).parent / "migrations")
+        )
         cfg.set_main_option("sqlalchemy.url", f"sqlite:///{db_path}")
         alembic_command.upgrade(cfg, "head")

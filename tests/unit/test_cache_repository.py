@@ -4,7 +4,6 @@ import logging
 from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
-import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 
@@ -15,6 +14,7 @@ from cache.repository import CacheRepository
 # --------------------------------------------------------------------------- #
 #  Helpers / fixtures                                                          #
 # --------------------------------------------------------------------------- #
+
 
 def _make_repo(no_cache: bool = False) -> CacheRepository:
     """
@@ -48,6 +48,7 @@ SOURCE = "osv"
 #  AC 3 — cache hit (valid entry)                                              #
 # --------------------------------------------------------------------------- #
 
+
 class TestCacheHit:
     def test_get_returns_data_when_entry_is_fresh(self):
         """AC 3: stored entry with future expires_at → cache hit."""
@@ -70,6 +71,7 @@ class TestCacheHit:
 # --------------------------------------------------------------------------- #
 #  AC 4 — expired entry → miss                                                #
 # --------------------------------------------------------------------------- #
+
 
 class TestCacheExpiry:
     def test_get_returns_none_when_entry_is_expired(self):
@@ -110,6 +112,7 @@ class TestCacheExpiry:
 #  AC 5 — --no-cache flag                                                      #
 # --------------------------------------------------------------------------- #
 
+
 class TestNoCacheFlag:
     def test_get_returns_none_when_no_cache(self):
         """AC 5: no-cache flag → get() always returns None."""
@@ -131,13 +134,16 @@ class TestNoCacheFlag:
 #  AC 6 — corrupted DB → WARNING logged, cache disabled, no crash             #
 # --------------------------------------------------------------------------- #
 
+
 class TestCorruptedDB:
     def test_get_disables_cache_and_logs_warning_on_db_error(self, caplog):
         """AC 6: OperationalError during get() → WARNING + _disabled=True."""
         repo = _make_repo()
 
         with patch.object(
-            repo._engine, "connect", side_effect=OperationalError("simulated corruption", None, None)
+            repo._engine,
+            "connect",
+            side_effect=OperationalError("simulated corruption", None, None),
         ):
             with caplog.at_level(logging.WARNING, logger="cache.repository"):
                 result = repo.get(PACKAGE_KEY, SOURCE)
@@ -151,7 +157,9 @@ class TestCorruptedDB:
         repo = _make_repo()
 
         with patch.object(
-            repo._engine, "connect", side_effect=OperationalError("simulated corruption", None, None)
+            repo._engine,
+            "connect",
+            side_effect=OperationalError("simulated corruption", None, None),
         ):
             with caplog.at_level(logging.WARNING, logger="cache.repository"):
                 repo.set(PACKAGE_KEY, SOURCE, SAMPLE_VULNS)
