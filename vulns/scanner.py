@@ -86,6 +86,7 @@ def scan_packages(packages: list, no_cache: bool = False) -> list:
                 {
                     "package": name,
                     "version": version,
+                    "cpe": pkg.get("cpe"),
                     "severity": vuln["severity"],
                     "cve": cve_id,
                     "fix": vuln["fixed"],

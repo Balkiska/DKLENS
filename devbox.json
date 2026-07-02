@@ -20,10 +20,11 @@
   },
   "shell": {
     "init_hook": [
-      "echo '🐳 DockLens devbox ready'",
-      "python --version",
-      "pre-commit install",
-      "poetry install"
-    ]
+      "poetry install --quiet",
+      "pre-commit install --quiet 2>/dev/null || true"
+    ],
+    "scripts": {
+      "start": "poetry run python main.py start"
+    }
   }
 }

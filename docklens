@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# Install dependencies if the venv is missing or incomplete
+if [ ! -f "$SCRIPT_DIR/.venv/bin/python" ]; then
+    if command -v devbox &> /dev/null; then
+        devbox run -q poetry install --quiet
+    else
+        echo "[DockLens] Error: devbox is not installed."
+        echo "Install it with: curl -fsSL https://get.jetify.com/devbox | bash"
+        exit 1
+    fi
+fi
+
+exec "$SCRIPT_DIR/.venv/bin/python" main.py "$@"
