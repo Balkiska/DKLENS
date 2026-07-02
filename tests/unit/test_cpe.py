@@ -1,5 +1,3 @@
-import pytest
-
 from cve.cpe import enrich_packages
 
 

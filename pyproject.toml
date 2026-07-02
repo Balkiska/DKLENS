@@ -23,6 +23,7 @@ package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0"
+ruff = ">=0.4"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

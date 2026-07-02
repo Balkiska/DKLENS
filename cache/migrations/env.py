@@ -1,5 +1,4 @@
 # Alembic env.py — tells Alembic how to connect to the DB and where the models are.
-from pathlib import Path
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
