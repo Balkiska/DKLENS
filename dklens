@@ -9,7 +9,7 @@ if [ ! -f "$SCRIPT_DIR/.venv/bin/python" ]; then
     if command -v devbox &> /dev/null; then
         devbox run -q poetry install --quiet
     else
-        echo "[DockLens] Error: devbox is not installed."
+        echo "[DKLENS] Error: devbox is not installed."
         echo "Install it with: curl -fsSL https://get.jetify.com/devbox | bash"
         exit 1
     fi

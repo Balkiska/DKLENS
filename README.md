@@ -1,4 +1,4 @@
-# Docklens
+# DKLENS
 
 Docker image vulnerability scanner with an interactive terminal menu.
 
@@ -34,8 +34,8 @@ curl -fsSL https://get.jetify.com/devbox | bash
 ## Installation
 
 ```bash
-git clone https://github.com/Balkiska/Docklens.git
-cd Docklens
+git clone https://github.com/Balkiska/DKLENS.git
+cd DKLENS
 devbox shell
 ```
 
@@ -48,21 +48,21 @@ Devbox automatically installs Python, Poetry, and all dependencies on first run.
 ### Interactive menu (recommended)
 
 ```bash
-./docklens start
+./dklens start
 ```
 
 This opens a full interactive menu:
 
 1. Select a local Docker image with arrow keys
-2. Docklens scans it automatically
+2. DKLENS scans it automatically
 3. After the scan, choose what to do:
-   - Filter by severity (CRITICAL / HIGH / MEDIUM)
+   - Filter by severity (CRITICAL / HIGH / MEDIUM / LOW)
    - Export as PDF
    - Export as JSON
    - Scan another image
    - Quit
 
-> No need to run `devbox shell` first — `./docklens start` works directly.
+> No need to run `devbox shell` first — `./dklens start` works directly.
 
 ### CLI scan (non-interactive)
 
@@ -93,7 +93,7 @@ poetry run python main.py scan <image> --no-cache
 ### Run the app
 
 ```bash
-./docklens start
+./dklens start
 ```
 
 ### Required for unit tests
@@ -127,7 +127,7 @@ Scan results are cached locally in SQLite so the same package is never looked up
 
 ```bash
 # Inspect the cache
-sqlite3 ~/.cache/docklens/cache.db "SELECT package_key, source, expires_at FROM cached_vulnerabilities;"
+sqlite3 ~/.cache/dklens/cache.db "SELECT package_key, source, expires_at FROM cached_vulnerabilities;"
 ```
 
 ---

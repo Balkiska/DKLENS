@@ -1,10 +1,10 @@
-# Application-wide settings for Docklens.
+# Application-wide settings for DKLENS.
 from pathlib import Path
 
 from cache.repository import CacheRepository
 
 # Where the SQLite cache file lives on the user's machine.
-CACHE_DB_PATH: Path = Path.home() / ".cache" / "docklens" / "cache.db"
+CACHE_DB_PATH: Path = Path.home() / ".cache" / "dklens" / "cache.db"
 
 # How long (in hours) a cache entry is considered valid.
 CACHE_TTL_HOURS: int = 24
@@ -21,5 +21,7 @@ def get_cache(no_cache: bool = False) -> CacheRepository:
     """
     global _cache_instance
     if _cache_instance is None or _cache_instance.no_cache != no_cache:
-        _cache_instance = CacheRepository(db_path=CACHE_DB_PATH, no_cache=no_cache, ttl_hours=CACHE_TTL_HOURS)
+        _cache_instance = CacheRepository(
+            db_path=CACHE_DB_PATH, no_cache=no_cache, ttl_hours=CACHE_TTL_HOURS
+        )
     return _cache_instance

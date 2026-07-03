@@ -1,5 +1,5 @@
 [project]
-name = "docklens"
+name = "dklens"
 version = "0.1.0"
 description = "Container/Docker image vulnerability scanner"
 authors = [
