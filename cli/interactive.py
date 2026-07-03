@@ -147,14 +147,19 @@ def _show_results(
         )
 
     if not displayed:
-        console.print(
-            Panel(
-                Align.center(NO_VULN_MESSAGE),
-                style=ROSE,
-                border_style=ROSE,
-                expand=True,
+        if severity_filter:
+            console.print(
+                f"[{ROSE}]No {severity_filter} vulnerabilities found.[/{ROSE}]\n"
             )
-        )
+        else:
+            console.print(
+                Panel(
+                    Align.center(NO_VULN_MESSAGE),
+                    style=ROSE,
+                    border_style=ROSE,
+                    expand=True,
+                )
+            )
     else:
         console.print(table)
 
@@ -205,6 +210,7 @@ def start():
                         "Show CRITICAL vulnerabilities only",
                         "Show HIGH vulnerabilities only",
                         "Show MEDIUM vulnerabilities only",
+                        "Show LOW vulnerabilities only",
                     ]
                 action_choices += [
                     "Export as PDF",
@@ -228,6 +234,9 @@ def start():
 
                 elif action == "Show MEDIUM vulnerabilities only":
                     _show_results(selected, findings, packages_count, "MEDIUM")
+
+                elif action == "Show LOW vulnerabilities only":
+                    _show_results(selected, findings, packages_count, "LOW")
 
                 elif action == "Export as PDF":
                     filename = inquirer.text(
