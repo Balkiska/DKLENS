@@ -1,5 +1,5 @@
 # api/main.py
-# Optional FastAPI REST API for DockLens.
+# Optional FastAPI REST API for DKLENS.
 # Allows external tools to scan Docker images via HTTP requests.
 
 from fastapi import FastAPI, HTTPException
@@ -12,9 +12,9 @@ from vulns.scanner import scan_packages
 from cve.cpe import enrich_packages
 
 app = FastAPI(
-    title="DockLens API",
+    title="DKLENS API",
     description="Docker Image Security Scanner REST API",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 
@@ -32,7 +32,7 @@ class ScanResponse(BaseModel):
 
 @app.get("/")
 def root():
-    return {"message": "DockLens API is running. Use POST /scan to scan an image."}
+    return {"message": "DKLENS API is running. Use POST /scan to scan an image."}
 
 
 @app.get("/health")
@@ -59,7 +59,7 @@ def scan(request: ScanRequest):
             image=request.image,
             total_packages=len(packages),
             vulnerabilities_found=vulns_found,
-            findings=findings
+            findings=findings,
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

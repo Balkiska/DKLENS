@@ -1,5 +1,5 @@
 # cli/menu.py
-# Main CLI entry point for DockLens.
+# Main CLI entry point for DKLENS.
 
 import typer
 from cli.output import show_table, show_json, export_pdf
@@ -10,12 +10,12 @@ from scanner.packages import extract_packages
 from vulns.scanner import scan_packages
 from cve.cpe import enrich_packages
 
-app = typer.Typer(help="DockLens - Docker Image Security Scanner")
+app = typer.Typer(help="DKLENS - Docker Image Security Scanner")
 
 
 @app.command()
 def start():
-    """Launch the interactive DockLens menu."""
+    """Launch the interactive DKLENS menu."""
     interactive_start()
 
 

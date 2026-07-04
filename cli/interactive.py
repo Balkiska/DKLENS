@@ -23,11 +23,11 @@ ROSE = "#785964"
 console = Console()
 
 TITLE = r"""
-    ____                      __      __
-   / __ \   ____     _____   / /__   / /  ___     ____     _____
-  / / / /  / __ \   / ___/  / //_/  / /  / _ \   / __ \   / ___/
- / /_/ /  / /_/ /  / /__   / ,<    / /  /  __/  / / / /  (__  )
-/_____/   \____/   \___/  /_/|_|  /_/   \___/  /_/ /_/  /____/
+    ____  __ __ __    _______   _______
+   / __ \/ //_// /   / ____/ | / / ___/
+  / / / / ,<  / /   / __/ /  |/ /\__ \
+ / /_/ / /| |/ /___/ /___/ /|  /___/ /
+/_____/_/ |_/_____/_____/_/ |_//____/
 """
 
 STYLE = get_style(
@@ -147,14 +147,19 @@ def _show_results(
         )
 
     if not displayed:
-        console.print(
-            Panel(
-                Align.center(NO_VULN_MESSAGE),
-                style=ROSE,
-                border_style=ROSE,
-                expand=True,
+        if severity_filter:
+            console.print(
+                f"[{ROSE}]No {severity_filter} vulnerabilities found.[/{ROSE}]\n"
             )
-        )
+        else:
+            console.print(
+                Panel(
+                    Align.center(NO_VULN_MESSAGE),
+                    style=ROSE,
+                    border_style=ROSE,
+                    expand=True,
+                )
+            )
     else:
         console.print(table)
 
@@ -205,6 +210,7 @@ def start():
                         "Show CRITICAL vulnerabilities only",
                         "Show HIGH vulnerabilities only",
                         "Show MEDIUM vulnerabilities only",
+                        "Show LOW vulnerabilities only",
                     ]
                 action_choices += [
                     "Export as PDF",
@@ -228,6 +234,9 @@ def start():
 
                 elif action == "Show MEDIUM vulnerabilities only":
                     _show_results(selected, findings, packages_count, "MEDIUM")
+
+                elif action == "Show LOW vulnerabilities only":
+                    _show_results(selected, findings, packages_count, "LOW")
 
                 elif action == "Export as PDF":
                     filename = inquirer.text(

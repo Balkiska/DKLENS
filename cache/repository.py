@@ -18,7 +18,7 @@ class CacheRepository:
     Local SQLite cache for vulnerability query results.
 
     Usage:
-        cache = CacheRepository(db_path=Path("~/.cache/docklens/cache.db").expanduser())
+        cache = CacheRepository(db_path=Path("~/.cache/dklens/cache.db").expanduser())
         result = cache.get("deb:libssl1.1:1.1.1f", "osv")
         if result is None:
             result = fetch_from_api(...)

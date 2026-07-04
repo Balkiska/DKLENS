@@ -1,5 +1,5 @@
 # cli/output.py
-# Display functions for DockLens scan results.
+# Display functions for DKLENS scan results.
 
 import json
 
@@ -18,7 +18,7 @@ console = Console()
 
 
 def show_table(image: str, findings: list):
-    table = Table(title=f"DockLens Scan Report: {image}")
+    table = Table(title=f"DKLENS Scan Report: {image}")
     table.add_column("Package")
     table.add_column("Version")
     table.add_column("Severity")
@@ -87,7 +87,7 @@ def export_pdf(image: str, findings: list, output_path: str):
         textColor=ROSE,
         alignment=TA_CENTER,
     )
-    story.append(Paragraph("DockLens Scan Report", title_style))
+    story.append(Paragraph("DKLENS Scan Report", title_style))
     story.append(Spacer(1, 24))
 
     # Image info

@@ -13,7 +13,7 @@ def extract_filesystem(image_name: str) -> Path:
     """Export image filesystem using docker save and extract all layers."""
     client = docker.from_env()
 
-    tmpdir = tempfile.mkdtemp(prefix="docklens_")
+    tmpdir = tempfile.mkdtemp(prefix="dklens_")
     image_tar = os.path.join(tmpdir, "image.tar")
     filesystem_dir = os.path.join(tmpdir, "filesystem")
     os.makedirs(filesystem_dir)

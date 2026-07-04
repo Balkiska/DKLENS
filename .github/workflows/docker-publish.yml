@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: balkiska/docklens
+  IMAGE_NAME: balkiska/dklens
 
 jobs:
   build-and-push:
