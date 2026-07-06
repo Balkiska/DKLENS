@@ -61,7 +61,10 @@ def query_osv(package_name: str, version: str, ecosystem: str) -> list:
         "package": {"name": package_name, "ecosystem": ecosystem},
         "version": version,
     }
-    response = httpx.post(OSV_API_URL, json=payload, timeout=10)
+    try:
+        response = httpx.post(OSV_API_URL, json=payload, timeout=10)
+    except Exception:
+        return []
     if response.status_code != 200:
         return []
 

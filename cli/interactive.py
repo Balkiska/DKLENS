@@ -100,7 +100,11 @@ def _run_scan(image: str) -> tuple:
         progress.update(
             task, description=f"Scanning {len(packages)} packages for CVEs..."
         )
-        findings = scan_packages(packages)
+        try:
+            findings = scan_packages(packages)
+        except Exception as e:
+            console.print(f"[red]Scan error: {e}[/red]")
+            findings = []
 
     return findings, len(packages)
 
