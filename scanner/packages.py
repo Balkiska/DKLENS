@@ -203,9 +203,9 @@ def parse_rpm_bdb_packages(fs_path: str) -> list:
         pkg_names = []
         i = 0
         while i < len(lines):
-            line = lines[i].strip()
-            if line.startswith(" ") and len(line) > 1:
-                pkg_names.append(line.strip())
+            raw_line = lines[i]
+            if raw_line.startswith(" ") and len(raw_line.strip()) > 1:
+                pkg_names.append(raw_line.strip())
                 i += 2
             else:
                 i += 1
