@@ -7,15 +7,17 @@
     "jq@latest",
     "ripgrep@latest",
     "sqlite@latest",
+    "rpm@latest",
     "kubectl@latest",
     "kubernetes-helm@latest",
     "pre-commit@4.5.1",
     "python310Packages.mypy",
-    "poetry@latest"
+    "poetry@latest",
+    "db5@latest"
   ],
   "env": {
-    "PYTHONDONTWRITEBYTECODE": "1",
-    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE":       "1",
+    "PYTHONUNBUFFERED":              "1",
     "PIP_DISABLE_PIP_VERSION_CHECK": "1"
   },
   "shell": {

@@ -9,6 +9,11 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# rpm est requis pour lire les bases BerkeleyDB/NDB (Rocky Linux 8, CentOS 7, UBI8, openSUSE)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends rpm \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip install poetry==2.1.3 --no-cache-dir
 
 COPY pyproject.toml poetry.lock ./
