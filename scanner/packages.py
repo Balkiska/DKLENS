@@ -157,28 +157,83 @@ def parse_rpm_packages(fs_path: str) -> list:
 
 def parse_rpm_bdb_packages(fs_path: str) -> list:
     """
-    Parse RPM packages from BerkeleyDB format using the native rpm command.
-    Used for older distros: Rocky Linux 8, CentOS 7, Red Hat UBI8, openSUSE.
-    Requires rpm to be installed on the host machine.
+    Parse RPM packages from BerkeleyDB format.
+    Method 1: native rpm command (works on Kali/systems with BDB support).
+    Method 2: db_dump fallback (works on modern Debian/Ubuntu/Nix).
     """
     packages = []
     rpm_dir = os.path.join(fs_path, "var", "lib", "rpm")
 
+    # Method 1: try native rpm command first
     try:
         result = subprocess.run(
             ["rpm", "--dbpath", rpm_dir, "-qa", "--qf", "%{NAME} %{VERSION}\n"],
             capture_output=True, text=True, timeout=30
         )
-        for line in result.stdout.strip().split("\n"):
-            parts = line.strip().split(" ", 1)
-            if len(parts) == 2:
-                name, version = parts
-                if name and version:
-                    packages.append({
-                        "name": name,
-                        "version": version,
-                        "ecosystem": "Red Hat",
-                    })
+        if result.stdout.strip():
+            for line in result.stdout.strip().split("\n"):
+                parts = line.strip().split(" ", 1)
+                if len(parts) == 2:
+                    name, version = parts
+                    if name and version:
+                        packages.append({
+                            "name": name,
+                            "version": version,
+                            "ecosystem": "Red Hat",
+                        })
+            if packages:
+                print(f"[INFO] RPM BDB read via rpm command: {len(packages)} packages")
+                return packages
+    except Exception:
+        pass
+
+    # Method 2: fallback to db_dump
+    print("[INFO] rpm command returned 0 packages, trying db_dump fallback...")
+    try:
+        name_db = os.path.join(rpm_dir, "Name")
+        result = subprocess.run(
+            ["db_dump", "-p", name_db],
+            capture_output=True, text=True, timeout=30
+        )
+        if result.returncode != 0:
+            print("[WARN] db_dump not available or failed.")
+            return []
+
+        lines = result.stdout.split("\n")
+        pkg_names = []
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
+            if line.startswith(" ") and len(line) > 1:
+                pkg_names.append(line.strip())
+                i += 2
+            else:
+                i += 1
+
+        pkg_db = os.path.join(rpm_dir, "Packages")
+        pkg_result = subprocess.run(
+            ["db_dump", "-p", pkg_db],
+            capture_output=True, text=True, timeout=60
+        )
+
+        pkg_data = " ".join(pkg_result.stdout.split("\n"))
+        strings = re.findall(r'[a-zA-Z0-9._+-]{2,50}', pkg_data)
+
+        for pkg_name in pkg_names:
+            for i, s in enumerate(strings):
+                if s == pkg_name and i + 1 < len(strings):
+                    candidate = strings[i + 1]
+                    if re.match(r'^\d+[\d._-]*$', candidate):
+                        packages.append({
+                            "name": pkg_name,
+                            "version": candidate,
+                            "ecosystem": "Red Hat",
+                        })
+                        break
+
+        if packages:
+            print(f"[INFO] RPM BDB read via db_dump: {len(packages)} packages")
+
     except Exception as e:
         print(f"[WARN] Could not read BerkeleyDB RPM database: {e}")
 
