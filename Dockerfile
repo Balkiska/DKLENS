@@ -1,13 +1,19 @@
-# NOTE: Ce container tourne en root — requis pour accéder au socket Docker.
-# Pour le durcir : créer un utilisateur non-root et l'ajouter au groupe docker
-# avec le bon GID de la machine hôte.
+# NOTE: This container runs as root — required to access the Docker socket.
+# To harden it: create a non-root user and add it to the docker group
+# with the correct GID of the host machine.
 #
-# WARNING: Monter /var/run/docker.sock donne un accès root effectif à l'hôte.
-# Ne pas exposer l'API publiquement sans un reverse proxy avec authentification.
+# WARNING: Mounting /var/run/docker.sock grants effective root access to the host.
+# Do not expose the API publicly without a reverse proxy with authentication.
 
 FROM python:3.12-slim
 
 WORKDIR /app
+
+# rpm: reads NDB databases (openSUSE) and serves as the 1st method for BerkeleyDB (Rocky 8, CentOS 7, UBI8)
+# db-util (db_dump): fallback method for BerkeleyDB, recent rpm builds can no longer read it natively
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends rpm db-util \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install poetry==2.1.3 --no-cache-dir
 
