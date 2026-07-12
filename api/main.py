@@ -18,23 +18,24 @@ app = FastAPI(
 )
 
 
+# Request body for the /scan endpoint
 class ScanRequest(BaseModel):
     image: str
-    no_cache: bool = False
+    no_cache: bool = False # skip the local CVE cache if True
 
-
+# skip the local CVE cache if True
 class ScanResponse(BaseModel):
     image: str
     total_packages: int
     vulnerabilities_found: int
     findings: list
 
-
+# Simple root endpoint, just to check the API is alive
 @app.get("/")
 def root():
     return {"message": "DKLENS API is running. Use POST /scan to scan an image."}
 
-
+# Health check endpoint (useful for CI/CD or monitoring)
 @app.get("/health")
 def health():
     return {"status": "ok"}
