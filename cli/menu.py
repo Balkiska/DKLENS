@@ -18,7 +18,7 @@ def start():
     """Launch the interactive DKLENS menu."""
     interactive_start()
 
-
+# Required so Typer treats this as a multi-command app even with few commands
 @app.callback()
 def main():
     pass
@@ -39,21 +39,27 @@ def scan(
     Scan a Docker image for known vulnerabilities.
     """
     typer.echo(f"Starting scan for: {image}")
-
+# Step 1: make sure the image exists locally (pull it otherwise)
     validate_and_pull_image(image)
+    
+ # Step 2: extract the image filesystem (layer by layer)
     fs_path = extract_filesystem(image)
+
+ # Step 3: detect installed packages and generate CPE identifiers
     packages = extract_packages(str(fs_path))
     packages = enrich_packages(packages)
 
     typer.echo(f"Found {len(packages)} packages. Checking vulnerabilities...")
-
+    
+ # Step 4: query vulnerability sources (OSV/NVD/EUVD) and score results
     findings = scan_packages(packages, no_cache=no_cache)
 
+# Step 5: print results in the requested format
     if format == "json":
         show_json(image, findings)
     else:
         show_table(image, findings)
-
+ # Step 6: optional export to PDF or JSON file
     if export:
         if export.endswith(".pdf"):
             export_pdf(image, findings, export)
