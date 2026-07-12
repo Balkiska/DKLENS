@@ -12,6 +12,7 @@ Docker image vulnerability scanner with an interactive terminal menu, usable as 
 - Suggests fix versions and upgrade commands
 - Exports results as PDF or JSON
 
+
 ## Supported distributions
 
 | Distribution | Package format | Example images |
@@ -71,6 +72,15 @@ This opens a full interactive menu:
    - Scan another image
    - Quit
 
+---
+#### Preview
+<img width="1146" height="548" alt="image" src="https://github.com/user-attachments/assets/e27f4724-b6cf-4680-b25a-ecb35ea788c1" />
+
+<img width="1325" height="820" alt="image" src="https://github.com/user-attachments/assets/500c1f58-fd90-4cb8-8867-e95a7b67be62" />
+
+<img width="1176" height="461" alt="image" src="https://github.com/user-attachments/assets/71e8e468-9a21-442d-aab8-6144412f1b47" />
+
+---
 ### CLI scan (non-interactive)
 
 First enter the devbox shell:
@@ -128,6 +138,15 @@ Since it's a plain container image exposing an HTTP API, DKLENS can also run as 
 > The only hard requirement: the pod needs access to a Docker daemon (DKLENS talks to it directly via the Docker socket to pull and inspect images) — typically by mounting the node's `/var/run/docker.sock`. The same security notes above apply here too: this is a plain-HTTP, unauthenticated, root-privileged setup, so put an Ingress/reverse proxy with TLS and access control in front of it before exposing it beyond a test cluster.
 
 Once exposed through a Service/Ingress, the REST API becomes reachable over the internet like any other web app — including its interactive Swagger docs at `/docs`, which can be opened directly from a browser to trigger scans without writing any code.
+
+---
+#### Preview
+<img width="1446" height="863" alt="image" src="https://github.com/user-attachments/assets/de6e3acd-3d95-42b1-9ef8-ab7a734778f2" />
+
+<img width="896" height="546" alt="image" src="https://github.com/user-attachments/assets/b99740fb-03da-4554-852d-c55b9d8a34e0" />
+
+<img width="896" height="546" alt="image" src="https://github.com/user-attachments/assets/d70903f5-9109-4d42-8788-ecb23e530458" />
+
 
 ---
 
