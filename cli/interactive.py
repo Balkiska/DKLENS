@@ -22,6 +22,7 @@ ROSE = "#785964"
 
 console = Console()
 
+# ASCII banner shown at startup
 TITLE = r"""
     ____  __ __ __    _______   _______
    / __ \/ //_// /   / ____/ | / / ___/
@@ -30,6 +31,7 @@ TITLE = r"""
 /_____/_/ |_/_____/_____/_/ |_//____/
 """
 
+# Custom InquirerPy theme, using the project's rose color
 STYLE = get_style(
     {
         "questionmark": ROSE,
@@ -43,6 +45,7 @@ STYLE = get_style(
     }
 )
 
+# message shown when a scan finds no vulnerabilities
 NO_VULN_MESSAGE = r"""✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿
 
                             /\___/\
@@ -54,6 +57,7 @@ NO_VULN_MESSAGE = r"""✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧
 
 ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿･ﾟ* ✧･ﾟ* ✿"""
 
+# Color mapping for each severity level in the results table
 SEVERITY_COLOR = {
     "CRITICAL": "bright_red",
     "HIGH": "red3",
@@ -63,7 +67,7 @@ SEVERITY_COLOR = {
     "NONE": "dim",
 }
 
-
+# Print the startup banner
 def _show_title():
     content = (
         f"[{ROSE}]{TITLE}[/{ROSE}]\n\n[{ROSE}]  Docker Image Security Scanner[/{ROSE}]"
@@ -71,6 +75,7 @@ def _show_title():
     console.print(Panel(content, border_style=ROSE, expand=True))
 
 
+# Get all locally available Docker image tags (skips dangling "<none>" tags)
 def _list_local_images() -> list:
     client = get_docker_client()
     images = []
@@ -80,7 +85,7 @@ def _list_local_images() -> list:
                 images.append(tag)
     return sorted(images)
 
-
+# Run the full scan pipeline for one image, with a live progress spinner
 def _run_scan(image: str) -> tuple:
     with Progress(
         SpinnerColumn(style=Style(color=ROSE)),
@@ -109,9 +114,11 @@ def _run_scan(image: str) -> tuple:
     return findings, len(packages)
 
 
+# Print scan results as a Rich table, optionally filtered by severity
 def _show_results(
     image: str, findings: list, packages_count: int, severity_filter: str = None
 ):
+    # Hide "NONE" severity findings, they're not actual vulnerabilities
     displayed = [f for f in findings if f["severity"] != "NONE"]
     if severity_filter:
         displayed = [f for f in displayed if f["severity"] == severity_filter]
@@ -168,10 +175,11 @@ def _show_results(
         console.print(table)
 
 
+# Main entry point for the interactive TUI (./dklens start)
 def start():
     try:
         _show_title()
-
+ # Outer loop: pick an image and scan it, repeat until user quits
         while True:
             with Progress(
                 SpinnerColumn(style=Style(color=ROSE)),
@@ -206,7 +214,7 @@ def start():
             _show_results(selected, findings, packages_count)
 
             has_vulns = any(f["severity"] != "NONE" for f in findings)
-
+ # Inner loop: post-scan actions (filter, export, rescan, quit)
             while True:
                 action_choices = []
                 if has_vulns:
