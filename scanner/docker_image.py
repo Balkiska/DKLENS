@@ -1,5 +1,4 @@
 import docker
-import sys
 from docker.errors import DockerException, ImageNotFound, APIError
 
 
@@ -11,7 +10,7 @@ def get_docker_client():
         return client
     except DockerException:
         print("[ERROR] Docker is not running or not installed.")
-        sys.exit(1)
+        raise RuntimeError("Docker is not running or not installed.")
 
 
 def validate_and_pull_image(image_name: str):
@@ -30,4 +29,4 @@ def validate_and_pull_image(image_name: str):
             return image
         except APIError as e:
             print(f"[ERROR] Failed to pull image: {e}")
-            sys.exit(1)
+            raise RuntimeError(f"Failed to pull image: {e}")
