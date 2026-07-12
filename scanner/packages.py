@@ -13,11 +13,14 @@ def detect_distro(fs_path: str) -> str:
     Detect the Linux distribution from the extracted filesystem.
     Returns 'alpine', 'wolfi', 'ubuntu', 'debian', 'rpm_sqlite', 'rpm_bdb', 'rpm_ndb' or 'unknown'.
     """
+
+     # APK database present: either Alpine or Wolfi (both use apk)
     if os.path.exists(os.path.join(fs_path, "lib", "apk", "db", "installed")):
         if os.path.exists(os.path.join(fs_path, "etc", "alpine-release")):
             return "alpine"
         return "wolfi"
 
+     # RPM-based distros: format varies by version, so check each known layout
     rpm_dir = os.path.join(fs_path, "var", "lib", "rpm")
     if os.path.exists(os.path.join(rpm_dir, "rpmdb.sqlite")):
         return "rpm_sqlite"
@@ -26,6 +29,7 @@ def detect_distro(fs_path: str) -> str:
     if os.path.exists(os.path.join(rpm_dir, "Packages")):
         return "rpm_bdb"
 
+     # DPKG database present: Debian or Ubuntu, distinguish via os-release
     if os.path.exists(os.path.join(fs_path, "var", "lib", "dpkg", "status")):
         os_release = os.path.join(fs_path, "etc", "os-release")
         try:
