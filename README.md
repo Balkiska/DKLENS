@@ -103,6 +103,26 @@ poetry run python main.py scan <image> --export report.pdf
 poetry run python main.py scan <image> --no-cache
 ```
 
+### Report formats
+
+#### PDF report
+
+A ready-to-share PDF report with severity breakdown, affected packages, and suggested fix versions.
+
+```bash
+poetry run python main.py scan <image> --export report.pdf
+```
+
+
+#### JSON report
+
+Machine-readable output, handy for piping into other tools or CI pipelines.
+
+```bash
+poetry run python main.py scan <image> --format json
+```
+
+
 ### REST API
 
 DKLENS also ships a FastAPI server so other tools can trigger scans over HTTP.
