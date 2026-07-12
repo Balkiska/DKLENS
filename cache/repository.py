@@ -47,10 +47,8 @@ class CacheRepository:
             )
             self._disabled = True
 
-    # ------------------------------------------------------------------ #
-    #  Public API                                                          #
-    # ------------------------------------------------------------------ #
-
+    
+    # Public API                                                          
     def get(self, package_key: str, source: str) -> list | None:
         """
         Return cached vulnerabilities for (package_key, source), or None on miss/expiry.
@@ -140,10 +138,7 @@ class CacheRepository:
             logger.warning("Cache write error, disabling cache: %s", exc)
             self._disabled = True
 
-    # ------------------------------------------------------------------ #
-    #  Internal helpers                                                    #
-    # ------------------------------------------------------------------ #
-
+    #  Internal helpers                                                     
     def _run_migrations(self, db_path: Path) -> None:
         """Run Alembic migrations so the schema is always up to date."""
         from alembic import command as alembic_command
