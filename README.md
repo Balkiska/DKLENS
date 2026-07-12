@@ -78,7 +78,7 @@ This opens a full interactive menu:
 
 <img width="1325" height="820" alt="image" src="https://github.com/user-attachments/assets/500c1f58-fd90-4cb8-8867-e95a7b67be62" />
 
-<img width="1176" height="461" alt="image" src="https://github.com/user-attachments/assets/71e8e468-9a21-442d-aab8-6144412f1b47" />
+<img width="1718" height="825" alt="image" src="https://github.com/user-attachments/assets/868dfd11-f5af-4c4f-b406-34fbe3640720" />
 
 ---
 ### CLI scan (non-interactive)
@@ -112,7 +112,11 @@ A ready-to-share PDF report with severity breakdown, affected packages, and sugg
 ```bash
 poetry run python main.py scan <image> --export report.pdf
 ```
+---
+#### Preview
+<img width="988" height="971" alt="image" src="https://github.com/user-attachments/assets/6f201872-a9bd-4f37-aecc-8f28b86eb764" />
 
+---
 
 #### JSON report
 
