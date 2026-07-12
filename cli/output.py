@@ -16,7 +16,7 @@ from reportlab.platypus import TableStyle
 
 console = Console()
 
-
+# Print scan results as a Rich table in the terminal
 def show_table(image: str, findings: list):
     table = Table(title=f"DKLENS Scan Report: {image}")
     table.add_column("Package")
@@ -45,6 +45,7 @@ def show_table(image: str, findings: list):
     console.print(table)
 
 
+# Print scan results as raw JSON in the terminal
 def show_json(image: str, findings: list):
     console.print_json(
         json.dumps(
@@ -58,6 +59,7 @@ def show_json(image: str, findings: list):
 
 ROSE = colors.HexColor("#785964")
 
+# Text color per severity level, used in the PDF table
 SEVERITY_COLORS_PDF = {
     "CRITICAL": colors.HexColor("#FF0000"),
     "HIGH": colors.HexColor("#CC2200"),
@@ -103,10 +105,10 @@ def export_pdf(image: str, findings: list, output_path: str):
     story.append(Paragraph(f"<b>Vulnerabilities found:</b> {vuln_count}", info_style))
     story.append(Spacer(1, 10))
 
-    # Paragraph styles for table cells (enables text wrapping)
+# Paragraph style for table cells (needed so long text wraps properly)
     cell_style = ParagraphStyle("cell", fontName="Helvetica", fontSize=7, leading=9)
 
-    # Table
+ # Build the findings table, skipping packages with no vulnerabilities
     data = [["Package", "Version", "Severity", "CVE", "Fixed in", "Command"]]
 
     for f in findings:
